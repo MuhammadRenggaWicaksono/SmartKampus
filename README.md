@@ -43,12 +43,35 @@ Aplikasi ini dibangun menggunakan ekosistem Flutter. Untuk saat ini, data yang d
 
 ```text
 lib/
-│
-├── screens/
-│   ├── dashboard_screen.dart    # Halaman utama aplikasi
-│   ├── lihat_krs_screen.dart    # Halaman Kartu Rencana Studi
-│   ├── lihat_khs_screen.dart    # Halaman Kartu Hasil Studi
-│   └── akademik_screen.dart     # (Opsional) Halaman navigasi menu akademik
-│
-├── theme_notifier.dart          # Pusat kendali (Global State) untuk sistem ganti tema
-└── main.dart                    # Entry point aplikasi
+├── main.dart
+└── screens/[cite: 1]
+    ├── auth/
+    │   └── login_screen.dart[cite: 1]
+    ├── akun/
+    │   ├── akun_screen.dart[cite: 1]
+    │   ├── ganti_password_screen.dart[cite: 1]
+    │   └── ganti_password_wifi_screen.dart[cite: 1]
+    ├── profil/
+    │   ├── biodata_mahasiswa_screen.dart[cite: 1]
+    │   └── biodata_keluarga_screen.dart[cite: 1]
+    ├── akademik/
+    │   ├── akademik_screen.dart[cite: 1]
+    │   └── kalender_akademik_screen.dart[cite: 1]
+    ├── perkuliahan/
+    │   ├── perkuliahan_screen.dart[cite: 1]
+    │   ├── jadwal_kuliah_screen.dart[cite: 1]
+    │   ├── jadwal_ujian_screen.dart[cite: 1]
+    │   └── presensi_screen.dart[cite: 1]
+    ├── studi/ (atau krs_khs)
+    │   ├── isi_krs_screen.dart[cite: 1]
+    │   ├── lihat_krs_screen.dart[cite: 1]
+    │   ├── khs_screen.dart[cite: 1]
+    │   ├── lihat_khs_screen.dart[cite: 1]
+    │   └── transkrip_screen.dart[cite: 1]
+    ├── komunikasi/
+    │   └── pesan_baru_screen.dart[cite: 1]
+    ├── keuangan/
+    │   └── keuangan_screen.dart[cite: 1]
+    └── core/ (Tampilan Utama)
+        ├── main_screen.dart[cite: 1]
+        └── dashboard_screen.dart[cite: 1]
