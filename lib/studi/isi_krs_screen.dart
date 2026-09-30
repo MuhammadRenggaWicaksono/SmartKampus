@@ -109,8 +109,8 @@ class _IsiKrsScreenState extends State<IsiKrsScreen> {
         final Color textColor = isDark ? Colors.white : Colors.black87;
         final Color cardColor = isDark 
             ? const Color(0xFF1E1E1E) 
-            : (isLgbt ? Colors.white.withOpacity(0.85) : Colors.white);
-        final Color infoBoxBg = isDark ? Colors.blue.shade900.withOpacity(0.3) : Colors.blue.shade50;
+            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
+        final Color infoBoxBg = isDark ? Colors.blue.shade900.withValues(alpha: 0.3) : Colors.blue.shade50;
 
         // [DIUBAH 2] Bungkus Container untuk gradasi LGBT (jika aktif)
         return Container(

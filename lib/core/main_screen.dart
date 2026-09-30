@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
         // Jika Dark = abu-abu gelap, jika LGBT = putih transparan, default = putih bersih
         final Color navBackgroundColor = isDark 
             ? const Color(0xFF1E1E1E) 
-            : (isLgbt ? Colors.white.withOpacity(0.85) : Colors.white);
+            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
             
         // Warna untuk icon yang TIDAK diklik
         final Color unselectedColor = isDark ? Colors.grey.shade500 : Colors.grey;

@@ -110,7 +110,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
         final Color subTextColor = isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8);
         final Color cardColor = isDark
             ? const Color(0xFF1E1E1E)
-            : (isLgbt ? Colors.white.withOpacity(0.85) : Colors.white);
+            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
 
         // Menentukan berapa banyak transaksi yang ditampilkan
         final visibleTransactions =
@@ -142,7 +142,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.orange.withOpacity(0.3),
+                        color: Colors.orange.withValues(alpha: 0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
@@ -172,7 +172,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
@@ -206,7 +206,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Icon(Icons.copy, color: Colors.white, size: 20),
@@ -259,7 +259,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )

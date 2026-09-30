@@ -24,7 +24,7 @@ class DashboardScreen extends StatelessWidget {
         final Color subTextColor = isDark ? Colors.grey.shade400 : Colors.grey;
         final Color cardColor = isDark 
             ? const Color(0xFF1E1E1E) 
-            : (isLgbt ? Colors.white.withOpacity(0.85) : Colors.white);
+            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
         
         final BoxDecoration bgDecoration = isLgbt
             ? const BoxDecoration(
@@ -90,7 +90,7 @@ class DashboardScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: cardColor,
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]
                       ),
                       child: Column(
                         children: [
@@ -106,7 +106,7 @@ class DashboardScreen extends StatelessWidget {
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(color: Colors.blue.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
                                 child: const Text('2 KELAS', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
                               )
                             ],
@@ -171,7 +171,7 @@ class DashboardScreen extends StatelessWidget {
   Widget _buildJadwalItem(String time, String title, String subtitle, Color color, Color textColor, Color subTextColor) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: color.withOpacity(0.05), border: Border.all(color: color.withOpacity(0.2)), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.05), border: Border.all(color: color.withValues(alpha: 0.2)), borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
           Container(
@@ -199,7 +199,7 @@ class DashboardScreen extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
         padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(12), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)]),
+        decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(12), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 5)]),
         child: Column(
           children: [
             Text(title, style: TextStyle(fontSize: 10, color: subTextColor, fontWeight: FontWeight.bold)),
@@ -213,7 +213,7 @@ class DashboardScreen extends StatelessWidget {
 
   Widget _buildMenuCepatItem(IconData icon, String title, Color color, Color cardColor, Color textColor, VoidCallback onTap) {
     return Container(
-      decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(12), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)]),
+      decoration: BoxDecoration(color: cardColor, borderRadius: BorderRadius.circular(12), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 5)]),
       child: Material(
         color: Colors.transparent,
         child: InkWell(

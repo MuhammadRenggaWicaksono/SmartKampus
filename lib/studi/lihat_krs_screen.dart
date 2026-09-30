@@ -118,7 +118,7 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
         final Color subTextColor = isDark ? Colors.grey.shade400 : Colors.grey;
         final Color cardColor = isDark 
             ? const Color(0xFF1E1E1E) 
-            : (isLgbt ? Colors.white.withOpacity(0.85) : Colors.white);
+            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
 
         // 4. Return Container (untuk background pelangi jika LGBT) yang membungkus Scaffold
         return Container(
@@ -230,7 +230,7 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: cardColor, // Menggunakan cardColor
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
