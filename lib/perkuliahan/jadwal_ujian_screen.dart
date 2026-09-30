@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class JadwalUjianScreen extends StatefulWidget {
-  const JadwalUjianScreen({Key? key}) : super(key: key);
+  const JadwalUjianScreen({super.key});
 
   @override
   State<JadwalUjianScreen> createState() => _JadwalUjianScreenState();

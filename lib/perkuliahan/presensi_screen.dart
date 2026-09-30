@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PresensiScreen extends StatelessWidget {
-  const PresensiScreen({Key? key}) : super(key: key);
+  const PresensiScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

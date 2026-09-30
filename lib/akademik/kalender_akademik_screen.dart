@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class KalenderAkademikScreen extends StatelessWidget {
-  const KalenderAkademikScreen({Key? key}) : super(key: key);
+  const KalenderAkademikScreen({super.key});
 
   void _downloadKalender(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(

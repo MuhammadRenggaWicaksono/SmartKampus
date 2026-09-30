@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/theme_notifier.dart';
 
 class LihatKrsScreen extends StatefulWidget {
-  const LihatKrsScreen({Key? key}) : super(key: key);
+  const LihatKrsScreen({super.key});
 
   @override
   State<LihatKrsScreen> createState() => _LihatKrsScreenState();
@@ -103,120 +104,154 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
       }
     }
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
-      appBar: AppBar(
-        title: const Text('Kartu Rencana Studi', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black87),
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          // --- FILTER SECTION ---
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
+    // 2. Gunakan ValueListenableBuilder untuk mendengarkan perubahan tema
+    return ValueListenableBuilder<AppThemeMode>(
+      valueListenable: appThemeNotifier,
+      builder: (context, currentTheme, child) {
+        
+        // 3. Definisikan warna dinamis berdasarkan tema terpilih
+        final bool isDark = currentTheme == AppThemeMode.dark;
+        final bool isLgbt = currentTheme == AppThemeMode.lgbt;
+        
+        final Color scaffoldBg = isDark ? const Color(0xFF121212) : const Color(0xFFF3F4F6);
+        final Color textColor = isDark ? Colors.white : Colors.black87;
+        final Color subTextColor = isDark ? Colors.grey.shade400 : Colors.grey;
+        final Color cardColor = isDark 
+            ? const Color(0xFF1E1E1E) 
+            : (isLgbt ? Colors.white.withOpacity(0.85) : Colors.white);
+
+        // 4. Return Container (untuk background pelangi jika LGBT) yang membungkus Scaffold
+        return Container(
+          decoration: isLgbt
+              ? const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple],
+                  ),
+                )
+              : BoxDecoration(color: scaffoldBg),
+          child: Scaffold(
+            backgroundColor: Colors.transparent, // Background tembus pandang agar warna Container di atas terlihat
+            
+            // --- APP BAR ---
+            appBar: AppBar(
+              title: Text('Kartu Rencana Studi', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600)),
+              backgroundColor: cardColor, // Menggunakan cardColor
+              iconTheme: IconThemeData(color: textColor), // Icon menyesuaikan warna teks
+              elevation: 0,
+              centerTitle: true,
+            ),
+            
+            // --- BODY ---
+            body: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                // --- FILTER SECTION ---
+                Container(
+                  color: cardColor, // Menggunakan cardColor
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          const Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
-                          const SizedBox(height: 6),
-                          _buildDropdown(
-                            value: _tahunTerpilih,
-                            items: _listTahun,
-                            onChanged: (val) {
-                              setState(() {
-                                _tahunTerpilih = val!;
-                                _isDataTampil = false;
-                              });
-                            },
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: subTextColor)),
+                                const SizedBox(height: 6),
+                                _buildDropdown(
+                                  value: _tahunTerpilih,
+                                  items: _listTahun,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _tahunTerpilih = val!;
+                                      _isDataTampil = false;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: subTextColor)),
+                                const SizedBox(height: 6),
+                                _buildDropdown(
+                                  value: _semesterTerpilih,
+                                  items: _listSemester,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _semesterTerpilih = val!;
+                                      _isDataTampil = false;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
-                          const SizedBox(height: 6),
-                          _buildDropdown(
-                            value: _semesterTerpilih,
-                            items: _listSemester,
-                            onChanged: (val) {
-                              setState(() {
-                                _semesterTerpilih = val!;
-                                _isDataTampil = false;
-                              });
-                            },
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _prosesData,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue.shade700,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            elevation: 0,
                           ),
-                        ],
+                          child: _isLoading 
+                            ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                            : const Text('Tampilkan Data KRS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _prosesData,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      elevation: 0,
-                    ),
-                    child: _isLoading 
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('Tampilkan Data KRS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    ],
                   ),
                 ),
+                
+                // --- HASIL SECTION ---
+                Expanded(
+                  child: !_isDataTampil 
+                      ? _buildEmptyState() 
+                      : (dataKrs == null || dataKrs.isEmpty) 
+                          ? _buildErrorState() 
+                          : _buildListKrs(dataKrs),
+                ),
+                
+                // --- FOOTER TOTAL SKS (Hanya tampil jika ada data) ---
+                if (_isDataTampil && dataKrs != null && dataKrs.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: cardColor, // Menggunakan cardColor
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Total Beban SKS:', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: textColor)),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text('$totalSks SKS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue.shade800)),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
-          
-          // --- HASIL SECTION ---
-          Expanded(
-            child: !_isDataTampil 
-                ? _buildEmptyState() 
-                : (dataKrs == null || dataKrs.isEmpty) 
-                    ? _buildErrorState() 
-                    : _buildListKrs(dataKrs),
-          ),
-          
-          // --- FOOTER TOTAL SKS (Hanya tampil jika ada data) ---
-          if (_isDataTampil && dataKrs != null && dataKrs.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Total Beban SKS:', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87)),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text('$totalSks SKS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue.shade800)),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -307,7 +342,7 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 6, offset: const Offset(0, 2))],
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6, offset: const Offset(0, 2))],
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),

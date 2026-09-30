@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TranskripScreen extends StatelessWidget {
-  const TranskripScreen({Key? key}) : super(key: key);
+  const TranskripScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

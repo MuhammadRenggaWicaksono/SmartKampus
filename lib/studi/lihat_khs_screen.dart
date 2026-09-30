@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LihatKhsScreen extends StatefulWidget {
-  const LihatKhsScreen({Key? key}) : super(key: key);
+  const LihatKhsScreen({super.key});
 
   @override
   State<LihatKhsScreen> createState() => _LihatKhsScreenState();
@@ -267,7 +267,7 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
           decoration: BoxDecoration(
             color: Colors.blue.shade800,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [BoxShadow(color: Colors.blue.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))],
+            boxShadow: [BoxShadow(color: Colors.blue.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +299,7 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 6, offset: const Offset(0, 2))],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6, offset: const Offset(0, 2))],
             ),
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -313,9 +313,9 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                 height: 45,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: _getWarnaNilai(matkul['nilai']).withOpacity(0.15),
+                  color: _getWarnaNilai(matkul['nilai']).withValues(alpha: 0.15),
                   shape: BoxShape.circle,
-                  border: Border.all(color: _getWarnaNilai(matkul['nilai']).withOpacity(0.5), width: 2),
+                  border: Border.all(color: _getWarnaNilai(matkul['nilai']).withValues(alpha: 0.5), width: 2),
                 ),
                 child: Text(
                   matkul['nilai'],
@@ -328,7 +328,7 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
               ),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
