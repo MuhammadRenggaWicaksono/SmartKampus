@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/theme_notifier.dart'; // Import pusat tema global
+import 'package:app_kampus/studi/isi_krs_screen.dart'; // Import layar Entri KRS
 
 class IsiKrsScreen extends StatefulWidget {
   const IsiKrsScreen({super.key});
@@ -69,18 +70,15 @@ class _IsiKrsScreenState extends State<IsiKrsScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // Tutup dialog dulu
-                // TODO: Kirim data (_shiftTerpilih) ke API Backend
+                Navigator.pop(context); // Tutup dialog konfirmasi
                 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Entri KRS Kelas $_shiftTerpilih Berhasil Disimpan!'),
-                    backgroundColor: Colors.green,
+                // Buka layar Pilih Mata Kuliah sesuai shift yang dipilih
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PilihMataKuliahScreen(shift: _shiftTerpilih!),
                   ),
                 );
-                
-                // Kembali ke halaman akademik setelah berhasil
-                Navigator.pop(context); 
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
