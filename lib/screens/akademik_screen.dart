@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app_kampus/studi/isi_krs_screen.dart';
+import 'package:app_kampus/studi/entri_krs_screen.dart';
 import 'package:app_kampus/studi/lihat_krs_screen.dart';
 import 'package:app_kampus/studi/lihat_khs_screen.dart';
 import 'package:app_kampus/studi/transkrip_screen.dart';
