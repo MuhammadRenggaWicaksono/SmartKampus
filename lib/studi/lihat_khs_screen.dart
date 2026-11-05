@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class LihatKhsScreen extends StatefulWidget {
   const LihatKhsScreen({super.key});
@@ -94,128 +96,137 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
     String keyData = '${_tahunTerpilih}_$_semesterTerpilih';
     Map<String, dynamic>? dataKhs = _databaseKhs[keyData];
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
-      appBar: AppBar(
-        title: const Text('Kartu Hasil Studi', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black87),
-        elevation: 0,
-        centerTitle: true,
-      ),
-      
-      // Menampilkan tombol Print PDF hanya jika data tersedia
-      floatingActionButton: _isDataTampil && dataKhs != null
-          ? FloatingActionButton.extended(
-              onPressed: _cetakPdf,
-              backgroundColor: Colors.red.shade700,
-              icon: const Icon(Icons.picture_as_pdf_outlined),
-              label: const Text('Cetak PDF', style: TextStyle(fontWeight: FontWeight.bold)),
-            )
-          : null,
+    return ThemeBuilder(
+      builder: (context, p) => Container(
+        decoration: p.backgroundDecoration,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text('Kartu Hasil Studi', style: TextStyle(color: p.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
+            backgroundColor: p.card,
+            foregroundColor: p.textPrimary,
+            iconTheme: IconThemeData(color: p.textPrimary),
+            elevation: 0,
+            centerTitle: true,
+          ),
 
-      body: Column(
-        children: [
-          // --- FILTER SECTION ---
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
-              children: [
-                Row(
+          // Menampilkan tombol Print PDF hanya jika data tersedia
+          floatingActionButton: _isDataTampil && dataKhs != null
+              ? FloatingActionButton.extended(
+                  onPressed: _cetakPdf,
+                  backgroundColor: Colors.red.shade700,
+                  icon: const Icon(Icons.picture_as_pdf_outlined),
+                  label: const Text('Cetak PDF', style: TextStyle(fontWeight: FontWeight.bold)),
+                )
+              : null,
+
+          body: Column(
+            children: [
+              // --- FILTER SECTION ---
+              Container(
+                color: p.card,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
-                          const SizedBox(height: 6),
-                          _buildDropdown(
-                            value: _tahunTerpilih,
-                            items: _listTahun,
-                            onChanged: (val) {
-                              setState(() {
-                                _tahunTerpilih = val!;
-                                _isDataTampil = false;
-                              });
-                            },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
+                              const SizedBox(height: 6),
+                              _buildDropdown(
+                                p: p,
+                                value: _tahunTerpilih,
+                                items: _listTahun,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _tahunTerpilih = val!;
+                                    _isDataTampil = false;
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
+                              const SizedBox(height: 6),
+                              _buildDropdown(
+                                p: p,
+                                value: _semesterTerpilih,
+                                items: _listSemester,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _semesterTerpilih = val!;
+                                    _isDataTampil = false;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
-                          const SizedBox(height: 6),
-                          _buildDropdown(
-                            value: _semesterTerpilih,
-                            items: _listSemester,
-                            onChanged: (val) {
-                              setState(() {
-                                _semesterTerpilih = val!;
-                                _isDataTampil = false;
-                              });
-                            },
-                          ),
-                        ],
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _prosesData,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade700,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          elevation: 0,
+                        ),
+                        child: _isLoading 
+                          ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                          : const Text('Tampilkan Data KHS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _prosesData,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      elevation: 0,
-                    ),
-                    child: _isLoading 
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('Tampilkan Data KHS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              
+              // --- HASIL SECTION ---
+              Expanded(
+                child: !_isDataTampil 
+                    ? _buildEmptyState(p) 
+                    : (dataKhs == null) 
+                        ? _buildErrorState(p) 
+                        : _buildListKhs(p, dataKhs),
+              ),
+            ],
           ),
-          
-          // --- HASIL SECTION ---
-          Expanded(
-            child: !_isDataTampil 
-                ? _buildEmptyState() 
-                : (dataKhs == null) 
-                    ? _buildErrorState() 
-                    : _buildListKhs(dataKhs),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildDropdown({required String value, required List<String> items, required Function(String?) onChanged}) {
+  Widget _buildDropdown({required AppPalette p, required String value, required List<String> items, required Function(String?) onChanged}) {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: p.border),
         borderRadius: BorderRadius.circular(8),
-        color: Colors.grey.shade50,
+        color: p.inputFill,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
+          dropdownColor: p.card,
+          icon: Icon(Icons.keyboard_arrow_down, color: p.textSecondary),
           items: items.map((String val) {
             return DropdownMenuItem<String>(
               value: val,
-              child: Text(val, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+              child: Text(val, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.textPrimary)),
             );
           }).toList(),
           onChanged: onChanged,
@@ -224,38 +235,38 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppPalette p) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.school_outlined, size: 70, color: Colors.grey.shade300),
+          Icon(Icons.school_outlined, size: 70, color: p.textSecondary),
           const SizedBox(height: 12),
-          Text('Silakan pilih filter dan klik Tampilkan', style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
+          Text('Silakan pilih filter dan klik Tampilkan', style: TextStyle(fontSize: 14, color: p.textMuted)),
         ],
       ),
     );
   }
 
-  Widget _buildErrorState() {
+  Widget _buildErrorState(AppPalette p) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.insert_page_break_outlined, size: 60, color: Colors.grey.shade400),
+            Icon(Icons.insert_page_break_outlined, size: 60, color: p.textSecondary),
             const SizedBox(height: 16),
-            const Text('Data KHS Tidak Tersedia', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text('Data KHS Tidak Tersedia', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: p.textPrimary)),
             const SizedBox(height: 8),
-            Text('Belum ada data nilai untuk Semester $_semesterTerpilih $_tahunTerpilih.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey.shade600)),
+            Text('Belum ada data nilai untuk Semester $_semesterTerpilih $_tahunTerpilih.', textAlign: TextAlign.center, style: TextStyle(color: p.textSecondary)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildListKhs(Map<String, dynamic> data) {
+  Widget _buildListKhs(AppPalette p, Map<String, dynamic> data) {
     List matkulList = data['matkul'];
 
     return ListView(
@@ -289,24 +300,20 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
         ),
         const SizedBox(height: 20),
         
-        Text('Detail Nilai Mata Kuliah', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey.shade800)),
+        Text('Detail Nilai Mata Kuliah', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: p.textPrimary)),
         const SizedBox(height: 12),
 
         // --- LIST MATA KULIAH ---
         ...matkulList.map((matkul) {
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6, offset: const Offset(0, 2))],
-            ),
+            decoration: p.cardDeco(radius: 12),
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              title: Text(matkul['nama'], style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+              title: Text(matkul['nama'], style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.textPrimary)),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 6.0),
-                child: Text('Kode: ${matkul['kode']}  •  ${matkul['sks']} SKS', style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                child: Text('Kode: ${matkul['kode']}  •  ${matkul['sks']} SKS', style: TextStyle(fontSize: 11, color: p.textSecondary)),
               ),
               trailing: Container(
                 width: 45,

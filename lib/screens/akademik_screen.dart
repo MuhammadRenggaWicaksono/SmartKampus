@@ -1,206 +1,477 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/akademik/skripsi_screen.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
+import 'package:app_kampus/data/app_data.dart';
+import 'package:app_kampus/data/skripsi_store.dart';
 import 'package:app_kampus/studi/entri_krs_screen.dart';
 import 'package:app_kampus/studi/lihat_krs_screen.dart';
 import 'package:app_kampus/studi/lihat_khs_screen.dart';
 import 'package:app_kampus/studi/transkrip_screen.dart';
-import 'package:app_kampus/theme_notifier.dart';
 
+/// Menu Akademik: KRS, Hasil Studi & Nilai, serta Tugas Akhir & Praktik.
 class AkademikScreen extends StatelessWidget {
   const AkademikScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AppThemeMode>(
-      valueListenable: appThemeNotifier,
-      builder: (context, currentTheme, child) {
-        final bool isDark = currentTheme == AppThemeMode.dark;
-        final bool isLgbt = currentTheme == AppThemeMode.lgbt;
-
-        final Color scaffoldBg = isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA);
-        final Color textColor = isDark ? Colors.white : Colors.black87;
-        final Color cardColor = isDark
-            ? const Color(0xFF1E1E1E)
-            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
-
-        return Container(
-          decoration: isLgbt
-              ? const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple],
-                  ),
-                )
-              : BoxDecoration(color: scaffoldBg),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              title: Text('Akademik', style: TextStyle(color: textColor, fontSize: 18)),
-              backgroundColor: cardColor,
-              elevation: 0.5,
-              automaticallyImplyLeading: false,
-              iconTheme: IconThemeData(color: textColor),
+    return ThemeBuilder(
+      builder: (context, p) => Container(
+        decoration: p.backgroundDecoration,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text(
+              'Akademik',
+              style: TextStyle(color: p.textPrimary, fontSize: 18),
             ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // --- KELOMPOK 1: KRS ---
-                  _buildSectionTitle('Kartu Rencana Studi (KRS)', isDark),
-                  _buildMenuGroup(
-                    cardColor: cardColor,
-                    children: [
-                      _buildMenuItem(
-                        context,
-                        title: 'Entri KRS',
-                        icon: Icons.edit_document,
-                        iconColor: Colors.orange,
-                        textColor: textColor,
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const IsiKrsScreen())),
-                      ),
-                      Divider(height: 1, indent: 56, color: isDark ? Colors.grey.shade800 : Colors.grey.shade200),
-                      _buildMenuItem(
-                        context,
-                        title: 'Lihat KRS',
-                        icon: Icons.assignment_turned_in,
-                        iconColor: Colors.blue,
-                        textColor: textColor,
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LihatKrsScreen())),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
+            backgroundColor: p.card,
+            foregroundColor: p.textPrimary,
+            elevation: 0.5,
+            automaticallyImplyLeading: false,
+            iconTheme: IconThemeData(color: p.textPrimary),
+          ),
+          body: ValueListenableBuilder<List<PengajuanSkripsi>>(
+            valueListenable: SkripsiStore.pengajuan,
+            builder: (context, pengajuanSkripsi, _) => ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
+              children: [
+                _buildRingkasan(p),
+                const SizedBox(height: 22),
 
-                  // --- KELOMPOK 2: NILAI ---
-                  _buildSectionTitle('Hasil Studi & Nilai', isDark),
-                  _buildMenuGroup(
-                    cardColor: cardColor,
-                    children: [
-                      _buildMenuItem(
+                // --- KELOMPOK 1: KRS ---
+                _buildSectionHeader(
+                  p,
+                  ikon: Icons.edit_note,
+                  warna: Colors.orange,
+                  judul: 'Kartu Rencana Studi (KRS)',
+                  keterangan: 'Pengisian dan riwayat rencana studi',
+                ),
+                const SizedBox(height: 10),
+                _buildMenuGroup(
+                  p,
+                  children: [
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.edit_document,
+                      warna: Colors.orange,
+                      judul: 'Entri KRS',
+                      keterangan: 'Ajukan atau ubah KRS semester berjalan',
+                      lencana: 'Belum diajukan',
+                      warnaLencana: p.warning,
+                      onTap: () => Navigator.push(
                         context,
-                        title: 'Lihat KHS',
-                        icon: Icons.grade,
-                        iconColor: Colors.green,
-                        textColor: textColor,
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LihatKhsScreen())),
+                        MaterialPageRoute(builder: (_) => const IsiKrsScreen()),
                       ),
-                      Divider(height: 1, indent: 56, color: isDark ? Colors.grey.shade800 : Colors.grey.shade200),
-                      _buildMenuItem(
+                    ),
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.assignment_turned_in,
+                      warna: Colors.blue,
+                      judul: 'Lihat KRS',
+                      keterangan: 'Daftar mata kuliah yang sudah diambil',
+                      lencana: '${AppData.sksSemesterIni} SKS',
+                      warnaLencana: p.accent,
+                      onTap: () => Navigator.push(
                         context,
-                        title: 'Rekap Nilai',
-                        icon: Icons.analytics,
-                        iconColor: Colors.purple,
-                        textColor: textColor,
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TranskripScreen())),
+                        MaterialPageRoute(
+                          builder: (_) => const LihatKrsScreen(),
+                        ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
 
-                  // --- KELOMPOK 3: TUGAS AKHIR & PRAKTIK ---
-                  _buildSectionTitle('Tugas Akhir & Praktik', isDark),
-                  _buildMenuGroup(
-                    cardColor: cardColor,
-                    children: [
-                      _buildMenuItem(
+                // --- KELOMPOK 2: NILAI ---
+                _buildSectionHeader(
+                  p,
+                  ikon: Icons.workspace_premium_outlined,
+                  warna: Colors.green,
+                  judul: 'Hasil Studi & Nilai',
+                  keterangan: 'Nilai akhir, IPS, dan rekap beban SKS',
+                ),
+                const SizedBox(height: 10),
+                _buildMenuGroup(
+                  p,
+                  children: [
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.grade,
+                      warna: Colors.green,
+                      judul: 'Lihat KHS',
+                      keterangan: 'Nilai per mata kuliah beserta IPS',
+                      lencana: 'IPS ${AppData.ipk.toStringAsFixed(2)}',
+                      warnaLencana: p.success,
+                      onTap: () => Navigator.push(
                         context,
-                        title: 'Kerja Praktik (KP)',
-                        icon: Icons.work_history,
-                        iconColor: Colors.teal,
-                        textColor: textColor,
-                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Menu Kerja Praktik belum tersedia'))),
+                        MaterialPageRoute(
+                          builder: (_) => const LihatKhsScreen(),
+                        ),
                       ),
-                      Divider(height: 1, indent: 56, color: isDark ? Colors.grey.shade800 : Colors.grey.shade200),
-                      _buildMenuItem(
+                    ),
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.analytics,
+                      warna: Colors.purple,
+                      judul: 'Rekap Nilai',
+                      keterangan: 'Transkrip dan total SKS yang ditempuh',
+                      lencana: '${AppData.sksDitempuh} SKS',
+                      warnaLencana: p.accent,
+                      onTap: () => Navigator.push(
                         context,
-                        title: 'KKN',
-                        icon: Icons.groups,
-                        iconColor: Colors.brown,
-                        textColor: textColor,
-                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Menu KKN belum tersedia'))),
+                        MaterialPageRoute(
+                          builder: (_) => const TranskripScreen(),
+                        ),
                       ),
-                      Divider(height: 1, indent: 56, color: isDark ? Colors.grey.shade800 : Colors.grey.shade200),
-                      _buildMenuItem(
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+
+                // --- KELOMPOK 3: TUGAS AKHIR & PRAKTIK ---
+                _buildSectionHeader(
+                  p,
+                  ikon: Icons.rocket_launch_outlined,
+                  warna: Colors.teal,
+                  judul: 'Tugas Akhir & Praktik',
+                  keterangan: 'Kerja Praktik, KKN, dan penyusunan skripsi',
+                ),
+                const SizedBox(height: 10),
+                _buildMenuGroup(
+                  p,
+                  children: [
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.work_history,
+                      warna: Colors.teal,
+                      judul: 'Kerja Praktik (KP)',
+                      keterangan: 'Magang di instansi atau industri mitra',
+                      lencana: 'Segera',
+                      warnaLencana: p.textMuted,
+                      onTap: () => _belumTersedia(context, p, 'Kerja Praktik'),
+                    ),
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.groups,
+                      warna: Colors.brown,
+                      judul: 'KKN',
+                      keterangan: 'Kuliah Kerja Nyata tematik',
+                      lencana: 'Segera',
+                      warnaLencana: p.textMuted,
+                      onTap: () => _belumTersedia(context, p, 'KKN'),
+                    ),
+                    _buildMenuItem(
+                      context,
+                      p,
+                      ikon: Icons.school,
+                      warna: Colors.indigo,
+                      judul: 'Skripsi',
+                      keterangan: 'Pengajuan judul, pembimbing, dan tahapan',
+                      lencana: pengajuanSkripsi.isEmpty
+                          ? 'Belum diajukan'
+                          : '${pengajuanSkripsi.length} judul diajukan',
+                      warnaLencana: pengajuanSkripsi.isEmpty
+                          ? p.warning
+                          : p.accent,
+                      onTap: () => Navigator.push(
                         context,
-                        title: 'Skripsi',
-                        icon: Icons.school,
-                        iconColor: Colors.indigo,
-                        textColor: textColor,
-                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Menu Skripsi belum tersedia'))),
+                        MaterialPageRoute(
+                          builder: (_) => const SkripsiScreen(),
+                        ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSectionTitle(String title, bool isDark) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0, left: 4.0),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: isDark ? Colors.blue.shade300 : Colors.blue.shade700,
-          letterSpacing: 0.5,
         ),
       ),
     );
   }
 
-  Widget _buildMenuGroup({required Color cardColor, required List<Widget> children}) {
+  void _belumTersedia(BuildContext context, AppPalette p, String nama) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.hourglass_empty, color: Colors.white, size: 18),
+            const SizedBox(width: 10),
+            Expanded(child: Text('Menu $nama belum tersedia')),
+          ],
+        ),
+        backgroundColor: p.textMuted,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------- kartu ringkasan
+  Widget _buildRingkasan(AppPalette p) {
     return Container(
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4))],
-        border: Border.all(color: cardColor == const Color(0xFF1E1E1E) ? Colors.grey.shade800 : Colors.grey.shade100),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF2563EB), Color(0xFF1E40AF)],
+        ),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2563EB).withValues(alpha: 0.3),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
-        children: children,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.menu_book_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Semester ${AppData.sksPerSemester.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      AppData.semesterAktif,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 11.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              _buildStat('IPK', AppData.ipk.toStringAsFixed(2)),
+              _buildStat('SKS', '${AppData.sksDitempuh}/$kSksTargetLulus'),
+              _buildStat('MATA KULIAH', '${AppData.mataKuliahAktif.length}'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStat(String label, String nilai) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.75),
+              fontSize: 9.5,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.6,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            nilai,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // -------------------------------------------------------- judul kelompok
+  Widget _buildSectionHeader(
+    AppPalette p, {
+    required IconData ikon,
+    required Color warna,
+    required String judul,
+    required String keterangan,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: warna.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: Icon(ikon, size: 17, color: warna),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  judul,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: p.textPrimary,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  keterangan,
+                  style: TextStyle(fontSize: 11, color: p.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------ grup menu
+  Widget _buildMenuGroup(AppPalette p, {required List<Widget> children}) {
+    return Container(
+      decoration: p.cardDeco(radius: 16, borderColor: p.border),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) Divider(height: 1, indent: 60, color: p.divider),
+            children[i],
+          ],
+        ],
       ),
     );
   }
 
   Widget _buildMenuItem(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required Color iconColor,
-    required Color textColor,
+    BuildContext context,
+    AppPalette p, {
+    required IconData ikon,
+    required Color warna,
+    required String judul,
+    required String keterangan,
     required VoidCallback onTap,
+    String? lencana,
+    Color? warnaLencana,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                width: 36,
+                height: 36,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      warna.withValues(alpha: 0.22),
+                      warna.withValues(alpha: 0.10),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                child: Icon(icon, color: iconColor, size: 22),
+                child: Icon(ikon, color: warna, size: 19),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: textColor),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      judul,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: p.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      keterangan,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        height: 1.3,
+                        color: p.textSecondary,
+                      ),
+                    ),
+                    if (lencana != null) ...[
+                      const SizedBox(height: 7),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: (warnaLencana ?? p.accent).withValues(
+                            alpha: 0.15,
+                          ),
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                        child: Text(
+                          lencana,
+                          style: TextStyle(
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.bold,
+                            color: warnaLencana ?? p.accent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey.shade400),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Icon(Icons.chevron_right, color: p.textSecondary),
+              ),
             ],
           ),
         ),

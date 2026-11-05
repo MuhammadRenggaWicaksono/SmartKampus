@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class JadwalKuliahScreen extends StatefulWidget {
   const JadwalKuliahScreen({super.key});
@@ -61,65 +63,71 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        title: const Text('Jadwal Kuliah', style: TextStyle(color: Colors.black, fontSize: 18)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        elevation: 0.5,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
-            tooltip: 'Download Jadwal PDF',
-            onPressed: _downloadJadwal,
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Dropdown Semester
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            color: Colors.white,
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _semesterTerpilih,
-                isExpanded: true,
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.blue),
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 14),
-                items: ['SEMESTER GANJIL 2026', 'SEMESTER GENAP 2025'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() => _semesterTerpilih = newValue!);
-                },
+    return ThemeBuilder(
+      builder: (context, p) => Container(
+        decoration: p.backgroundDecoration,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text('Jadwal Kuliah', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            backgroundColor: p.card,
+            foregroundColor: p.textPrimary,
+            iconTheme: IconThemeData(color: p.textPrimary),
+            elevation: 0.5,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                tooltip: 'Download Jadwal PDF',
+                onPressed: _downloadJadwal,
               ),
-            ),
+              const SizedBox(width: 8),
+            ],
           ),
-          
-          // List Jadwal
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _jadwal.length,
-              itemBuilder: (context, index) {
-                final hariJadwal = _jadwal[index];
-                return _buildHariSection(hariJadwal['hari'], hariJadwal['kelas']);
-              },
-            ),
+          body: Column(
+            children: [
+              // Dropdown Semester
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                color: p.card,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _semesterTerpilih,
+                    isExpanded: true,
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.blue),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: p.textPrimary, fontSize: 14),
+                    items: ['SEMESTER GANJIL 2026', 'SEMESTER GENAP 2025'].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() => _semesterTerpilih = newValue!);
+                    },
+                  ),
+                ),
+              ),
+
+              // List Jadwal
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _jadwal.length,
+                  itemBuilder: (context, index) {
+                    final hariJadwal = _jadwal[index];
+                    return _buildHariSection(p, hariJadwal['hari'], hariJadwal['kelas']);
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildHariSection(String hari, List<Map<String, dynamic>> kelasi) {
+  Widget _buildHariSection(AppPalette p, String hari, List<Map<String, dynamic>> kelasi) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -127,30 +135,25 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Text(
             hari.toUpperCase(),
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue.shade700, letterSpacing: 1),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: p.sectionTitle, letterSpacing: 1),
           ),
         ),
-        ...kelasi.map((mk) => _buildKartuMatkul(mk)),
+        ...kelasi.map((mk) => _buildKartuMatkul(p, mk)),
       ],
     );
   }
 
-  Widget _buildKartuMatkul(Map<String, dynamic> mk) {
+  Widget _buildKartuMatkul(AppPalette p, Map<String, dynamic> mk) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 4))],
-        border: Border.all(color: Colors.grey.shade100),
-      ),
+      decoration: p.cardDeco(radius: 16, borderColor: p.border),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header: Jam & Kode
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: const BorderRadius.vertical(top: Radius.circular(16))),
+            decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: const BorderRadius.vertical(top: Radius.circular(16))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -163,40 +166,40 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                  child: Text(mk['kode'], style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey.shade700)),
+                  decoration: BoxDecoration(color: p.card, borderRadius: BorderRadius.circular(8)),
+                  child: Text(mk['kode'], style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textPrimary)),
                 ),
               ],
             ),
           ),
-          
+
           // Body: Nama, Ruang, Dosen
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(mk['nama'], style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 1.3)),
+                Text(mk['nama'], style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, height: 1.3, color: p.textPrimary)),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(Icons.room_outlined, size: 16, color: Colors.grey.shade600),
+                    Icon(Icons.room_outlined, size: 16, color: p.textSecondary),
                     const SizedBox(width: 6),
-                    Text(mk['ruang'], style: TextStyle(fontSize: 13, color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+                    Text(mk['ruang'], style: TextStyle(fontSize: 13, color: p.textPrimary, fontWeight: FontWeight.w500)),
                     const SizedBox(width: 12),
-                    Icon(Icons.menu_book_outlined, size: 16, color: Colors.grey.shade600),
+                    Icon(Icons.menu_book_outlined, size: 16, color: p.textSecondary),
                     const SizedBox(width: 6),
-                    Text('${mk['sks']} SKS', style: TextStyle(fontSize: 13, color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+                    Text('${mk['sks']} SKS', style: TextStyle(fontSize: 13, color: p.textPrimary, fontWeight: FontWeight.w500)),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.person_outline, size: 16, color: Colors.grey.shade600),
+                    Icon(Icons.person_outline, size: 16, color: p.textSecondary),
                     const SizedBox(width: 6),
                     Expanded(
-                      child: Text(mk['dosen'], style: TextStyle(fontSize: 13, color: Colors.grey.shade700)),
+                      child: Text(mk['dosen'], style: TextStyle(fontSize: 13, color: p.textPrimary)),
                     ),
                   ],
                 ),
@@ -205,14 +208,14 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
           ),
 
           // Footer: Link Materi
-          const Divider(height: 1, thickness: 1),
+          Divider(height: 1, thickness: 1, color: p.divider),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Link Materi', style: TextStyle(fontSize: 13, color: Colors.grey.shade600, fontWeight: FontWeight.w500)),
-                mk['adaLink'] 
+                Text('Link Materi', style: TextStyle(fontSize: 13, color: p.textSecondary, fontWeight: FontWeight.w500)),
+                mk['adaLink']
                   ? ElevatedButton.icon(
                       onPressed: () => _downloadMateri(mk['nama']),
                       icon: const Icon(Icons.download, size: 16),
@@ -225,7 +228,7 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     )
-                  : Text('Tidak Ada Link...', style: TextStyle(fontSize: 13, color: Colors.grey.shade400, fontStyle: FontStyle.italic)),
+                  : Text('Tidak Ada Link...', style: TextStyle(fontSize: 13, color: p.textMuted, fontStyle: FontStyle.italic)),
               ],
             ),
           ),

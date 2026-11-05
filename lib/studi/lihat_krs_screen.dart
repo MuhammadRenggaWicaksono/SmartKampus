@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:app_kampus/theme_notifier.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class LihatKrsScreen extends StatefulWidget {
   const LihatKrsScreen({super.key});
@@ -104,41 +105,21 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
       }
     }
 
-    // 2. Gunakan ValueListenableBuilder untuk mendengarkan perubahan tema
-    return ValueListenableBuilder<AppThemeMode>(
-      valueListenable: appThemeNotifier,
-      builder: (context, currentTheme, child) {
-        
-        // 3. Definisikan warna dinamis berdasarkan tema terpilih
-        final bool isDark = currentTheme == AppThemeMode.dark;
-        final bool isLgbt = currentTheme == AppThemeMode.lgbt;
-        
-        final Color scaffoldBg = isDark ? const Color(0xFF121212) : const Color(0xFFF3F4F6);
-        final Color textColor = isDark ? Colors.white : Colors.black87;
-        final Color subTextColor = isDark ? Colors.grey.shade400 : Colors.grey;
-        final Color cardColor = isDark 
-            ? const Color(0xFF1E1E1E) 
-            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
-
-        // 4. Return Container (untuk background pelangi jika LGBT) yang membungkus Scaffold
+    // 2. Gunakan ThemeBuilder untuk mendengarkan perubahan tema
+    return ThemeBuilder(
+      builder: (context, p) {
+        // 3. Warna dinamis berasal dari AppPalette (p)
         return Container(
-          decoration: isLgbt
-              ? const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple],
-                  ),
-                )
-              : BoxDecoration(color: scaffoldBg),
+          decoration: p.backgroundDecoration,
           child: Scaffold(
             backgroundColor: Colors.transparent, // Background tembus pandang agar warna Container di atas terlihat
             
             // --- APP BAR ---
             appBar: AppBar(
-              title: Text('Kartu Rencana Studi', style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600)),
-              backgroundColor: cardColor, // Menggunakan cardColor
-              iconTheme: IconThemeData(color: textColor), // Icon menyesuaikan warna teks
+              title: Text('Kartu Rencana Studi', style: TextStyle(color: p.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
+              backgroundColor: p.card,
+              foregroundColor: p.textPrimary,
+              iconTheme: IconThemeData(color: p.textPrimary),
               elevation: 0,
               centerTitle: true,
             ),
@@ -148,7 +129,7 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
               children: [
                 // --- FILTER SECTION ---
                 Container(
-                  color: cardColor, // Menggunakan cardColor
+                  color: p.card,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Column(
                     children: [
@@ -158,9 +139,10 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: subTextColor)),
+                                Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
                                 const SizedBox(height: 6),
                                 _buildDropdown(
+                                  p: p,
                                   value: _tahunTerpilih,
                                   items: _listTahun,
                                   onChanged: (val) {
@@ -178,9 +160,10 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: subTextColor)),
+                                Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
                                 const SizedBox(height: 6),
                                 _buildDropdown(
+                                  p: p,
                                   value: _semesterTerpilih,
                                   items: _listSemester,
                                   onChanged: (val) {
@@ -218,10 +201,10 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
                 // --- HASIL SECTION ---
                 Expanded(
                   child: !_isDataTampil 
-                      ? _buildEmptyState() 
+                      ? _buildEmptyState(p) 
                       : (dataKrs == null || dataKrs.isEmpty) 
-                          ? _buildErrorState() 
-                          : _buildListKrs(dataKrs),
+                          ? _buildErrorState(p) 
+                          : _buildListKrs(p, dataKrs),
                 ),
                 
                 // --- FOOTER TOTAL SKS (Hanya tampil jika ada data) ---
@@ -229,20 +212,20 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: cardColor, // Menggunakan cardColor
-                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
+                      color: p.card,
+                      boxShadow: [BoxShadow(color: p.shadow, blurRadius: 10, offset: const Offset(0, -5))],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Total Beban SKS:', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: textColor)),
+                        Text('Total Beban SKS:', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: p.textPrimary)),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
+                            color: Colors.blue.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text('$totalSks SKS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue.shade800)),
+                          child: Text('$totalSks SKS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.accentText)),
                         ),
                       ],
                     ),
@@ -255,24 +238,25 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
     );
   }
 
-  Widget _buildDropdown({required String value, required List<String> items, required Function(String?) onChanged}) {
+  Widget _buildDropdown({required AppPalette p, required String value, required List<String> items, required Function(String?) onChanged}) {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: p.border),
         borderRadius: BorderRadius.circular(8),
-        color: Colors.grey.shade50,
+        color: p.inputFill,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
+          dropdownColor: p.card,
+          icon: Icon(Icons.keyboard_arrow_down, color: p.textSecondary),
           items: items.map((String val) {
             return DropdownMenuItem<String>(
               value: val,
-              child: Text(val, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+              child: Text(val, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.textPrimary)),
             );
           }).toList(),
           onChanged: onChanged,
@@ -281,21 +265,21 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppPalette p) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.feed_outlined, size: 70, color: Colors.grey.shade300),
+          Icon(Icons.feed_outlined, size: 70, color: p.textSecondary),
           const SizedBox(height: 12),
-          Text('Silakan pilih filter dan klik Tampilkan', style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
+          Text('Silakan pilih filter dan klik Tampilkan', style: TextStyle(fontSize: 14, color: p.textMuted)),
         ],
       ),
     );
   }
 
   // Tampilan ketika data kosong (Meniru persis peringatan di screenshot terakhir)
-  Widget _buildErrorState() {
+  Widget _buildErrorState(AppPalette p) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -304,8 +288,8 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.red.shade50,
-              border: Border.all(color: Colors.red.shade200),
+              color: Colors.red.withValues(alpha: 0.15),
+              border: Border.all(color: Colors.red.withValues(alpha: 0.4)),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -313,16 +297,16 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.error_outline, color: Colors.red.shade700),
+                    Icon(Icons.error_outline, color: p.danger),
                     const SizedBox(width: 8),
-                    Text('DATA TIDAK TERSEDIA', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red.shade800, fontSize: 14)),
+                    Text('DATA TIDAK TERSEDIA', style: TextStyle(fontWeight: FontWeight.bold, color: p.danger, fontSize: 14)),
                   ],
                 ),
-                const Divider(height: 24),
-                const Text('Mungkin disebabkan oleh:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Divider(height: 24, color: p.divider),
+                Text('Mungkin disebabkan oleh:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: p.textPrimary)),
                 const SizedBox(height: 8),
-                Text('1) Belum ada data KRS pada Semester $_semesterTerpilih ${_tahunTerpilih.split('/')[0]}.', style: const TextStyle(fontSize: 13, height: 1.5)),
-                Text('2) KRS Semester $_semesterTerpilih ${_tahunTerpilih.split('/')[0]} belum divalidasi (Silakan hubungi dosen PA).', style: const TextStyle(fontSize: 13, height: 1.5)),
+                Text('1) Belum ada data KRS pada Semester $_semesterTerpilih ${_tahunTerpilih.split('/')[0]}.', style: TextStyle(fontSize: 13, height: 1.5, color: p.textPrimary)),
+                Text('2) KRS Semester $_semesterTerpilih ${_tahunTerpilih.split('/')[0]} belum divalidasi (Silakan hubungi dosen PA).', style: TextStyle(fontSize: 13, height: 1.5, color: p.textPrimary)),
               ],
             ),
           ),
@@ -331,7 +315,7 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
     );
   }
 
-  Widget _buildListKrs(List<Map<String, dynamic>> data) {
+  Widget _buildListKrs(AppPalette p, List<Map<String, dynamic>> data) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: data.length,
@@ -339,11 +323,7 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
         final matkul = data[index];
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6, offset: const Offset(0, 2))],
-          ),
+          decoration: p.cardDeco(radius: 12),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -354,23 +334,23 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(4)),
-                      child: Text('Kode: ${matkul['kode']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey.shade700)),
+                      decoration: BoxDecoration(color: p.chipBackground, borderRadius: BorderRadius.circular(4)),
+                      child: Text('Kode: ${matkul['kode']}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: p.textSecondary)),
                     ),
-                    Text('${matkul['sks']} SKS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.blue.shade700)),
+                    Text('${matkul['sks']} SKS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.accentText)),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Text(
                   matkul['nama'],
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: p.textPrimary),
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(Icons.meeting_room_outlined, size: 16, color: Colors.grey.shade600),
+                    Icon(Icons.meeting_room_outlined, size: 16, color: p.textSecondary),
                     const SizedBox(width: 6),
-                    Text('Kelas: ${matkul['kelas']}', style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+                    Text('Kelas: ${matkul['kelas']}', style: TextStyle(fontSize: 12, color: p.textSecondary)),
                   ],
                 ),
               ],

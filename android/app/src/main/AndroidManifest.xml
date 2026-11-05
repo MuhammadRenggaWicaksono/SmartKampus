@@ -37,9 +37,20 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
-        <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT"/>
-            <data android:mimeType="text/plain"/>
-        </intent>
-    </queries>
+            <intent>
+                <action android:name="android.intent.action.PROCESS_TEXT"/>
+                <data android:mimeType="text/plain"/>
+            </intent>
+            <!-- Diperlukan image_picker saat ImageSource.camera dipakai.
+                 Tanpa ini, Android 11+ tidak bisa menemukan aplikasi kamera. -->
+            <intent>
+                <action android:name="android.media.action.IMAGE_CAPTURE"/>
+            </intent>
+            <!-- Galeri dibuka lewat ACTION_GET_CONTENT / Photo Picker.
+                 Ini TIDAK butuh izin runtime apa pun. -->
+            <intent>
+                <action android:name="android.intent.action.GET_CONTENT"/>
+                <data android:mimeType="image/*"/>
+            </intent>
+        </queries>
 </manifest>

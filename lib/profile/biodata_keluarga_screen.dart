@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class BiodataKeluargaScreen extends StatefulWidget {
   const BiodataKeluargaScreen({super.key});
@@ -50,101 +52,102 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        title: const Text('Biodata Keluarga', style: TextStyle(color: Colors.black, fontSize: 18)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        elevation: 0.5,
-        actions: [
-          TextButton.icon(
-            onPressed: _toggleEdit,
-            icon: Icon(
-              _isEditing ? Icons.check_circle : Icons.edit,
-              color: _isEditing ? Colors.green : Colors.blue,
-            ),
-            label: Text(
-              _isEditing ? 'Simpan' : 'Edit',
-              style: TextStyle(
-                color: _isEditing ? Colors.green : Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_isEditing)
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
-                child: Row(
-                  children: const [
-                    Icon(Icons.info_outline, color: Colors.blue),
-                    SizedBox(width: 8),
-                    Expanded(child: Text('Ubah data orang tua lalu tekan Simpan.', style: TextStyle(color: Colors.blue))),
-                  ],
+    return ThemeBuilder(
+      builder: (context, p) => Container(
+        decoration: p.backgroundDecoration,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text('Biodata Keluarga', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            backgroundColor: p.card,
+            foregroundColor: p.textPrimary,
+            iconTheme: IconThemeData(color: p.textPrimary),
+            elevation: 0.5,
+            actions: [
+              TextButton.icon(
+                onPressed: _toggleEdit,
+                icon: Icon(
+                  _isEditing ? Icons.check_circle : Icons.edit,
+                  color: _isEditing ? p.success : p.accentText,
+                ),
+                label: Text(
+                  _isEditing ? 'Simpan' : 'Edit',
+                  style: TextStyle(
+                    color: _isEditing ? p.success : p.accentText,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_isEditing)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, color: p.accentText),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text('Ubah data orang tua lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
+                      ],
+                    ),
+                  ),
 
-            // KELOMPOK 1: DATA AYAH
-            _buildSectionTitle('DATA AYAH KANDUNG'),
-            _buildCardGroup([
-              _buildTextField('Nama Ayah', _namaAyahCtrl, Icons.person_outline),
-              _buildTextField('Pekerjaan Ayah', _pekerjaanAyahCtrl, Icons.work_outline),
-              _buildTextField('Penghasilan Ayah', _penghasilanAyahCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
-            ]),
-            const SizedBox(height: 20),
+                // KELOMPOK 1: DATA AYAH
+                _buildSectionTitle('DATA AYAH KANDUNG', p),
+                _buildCardGroup(p, [
+                  _buildTextField(p, 'Nama Ayah', _namaAyahCtrl, Icons.person_outline),
+                  _buildTextField(p, 'Pekerjaan Ayah', _pekerjaanAyahCtrl, Icons.work_outline),
+                  _buildTextField(p, 'Penghasilan Ayah', _penghasilanAyahCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
+                ]),
+                const SizedBox(height: 20),
 
-            // KELOMPOK 2: DATA IBU
-            _buildSectionTitle('DATA IBU KANDUNG'),
-            _buildCardGroup([
-              _buildTextField('Nama Ibu', _namaIbuCtrl, Icons.person_outline),
-              _buildTextField('Pekerjaan Ibu', _pekerjaanIbuCtrl, Icons.work_outline),
-              _buildTextField('Penghasilan Ibu', _penghasilanIbuCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
-            ]),
-            const SizedBox(height: 30),
-          ],
+                // KELOMPOK 2: DATA IBU
+                _buildSectionTitle('DATA IBU KANDUNG', p),
+                _buildCardGroup(p, [
+                  _buildTextField(p, 'Nama Ibu', _namaIbuCtrl, Icons.person_outline),
+                  _buildTextField(p, 'Pekerjaan Ibu', _pekerjaanIbuCtrl, Icons.work_outline),
+                  _buildTextField(p, 'Penghasilan Ibu', _penghasilanIbuCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
+                ]),
+                const SizedBox(height: 30),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
   // Header tiap kelompok
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, AppPalette p) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary),
       ),
     );
   }
 
-  // Kartu putih pembungkus form
-  Widget _buildCardGroup(List<Widget> children) {
+  // Kartu pembungkus form
+  Widget _buildCardGroup(AppPalette p, List<Widget> children) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
-      ),
+      decoration: p.cardDeco(radius: 16),
       child: Column(children: children),
     );
   }
 
   // Desain Form Field
   Widget _buildTextField(
+    AppPalette p,
     String label,
     TextEditingController controller,
     IconData icon, {
@@ -157,27 +160,27 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
         enabled: _isEditing, // Hanya bisa diisi jika _isEditing true
         keyboardType: keyboardType,
         style: TextStyle(
-          color: _isEditing ? Colors.black : Colors.grey.shade700,
+          color: _isEditing ? p.textPrimary : p.textSecondary,
           fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.grey),
-          prefixIcon: Icon(icon, color: _isEditing ? Colors.blue : Colors.grey.shade400),
+          labelStyle: TextStyle(color: p.textSecondary),
+          prefixIcon: Icon(icon, color: _isEditing ? p.accent : p.textSecondary),
           filled: true,
-          fillColor: _isEditing ? Colors.white : Colors.grey.shade50,
+          fillColor: _isEditing ? p.inputFill : p.surfaceAlt,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade200),
+            borderSide: BorderSide(color: p.border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: p.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.blue, width: 2),
+            borderSide: BorderSide(color: p.accent, width: 2),
           ),
         ),
       ),

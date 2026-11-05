@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import untuk fungsi Clipboard
-import 'package:app_kampus/theme_notifier.dart';// Import pusat tema global
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({super.key});
@@ -77,13 +78,48 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
     },
   ];
 
+  /// Ambil angka dari string rupiah, mis. "-Rp 9.000.000" -> 9000000.
+  int _angka(String teks) {
+    final bersih = teks.replaceAll(RegExp(r'[^0-9]'), '');
+    return int.tryParse(bersih) ?? 0;
+  }
+
+  /// Sisa tagihan = total tagihan - total pembayaran.
+  ///
+  /// Sebelumnya nilai ini di-hardcode `'Total Tagihan: Rp 0'` sehingga tidak
+  /// pernah berubah walau daftar transaksinya ditambah/dikurangi.
+  int get _sisaTagihan {
+    var tagihan = 0;
+    var dibayar = 0;
+    for (final t in _allTransactions) {
+      final nilai = _angka(t['amount'] as String);
+      if (t['isIncome'] as bool) {
+        dibayar += nilai;
+      } else {
+        tagihan += nilai;
+      }
+    }
+    final sisa = tagihan - dibayar;
+    return sisa < 0 ? 0 : sisa;
+  }
+
+  String _rupiah(int nilai) {
+    final teks = nilai.toString();
+    final buffer = StringBuffer();
+    for (var i = 0; i < teks.length; i++) {
+      if (i > 0 && (teks.length - i) % 3 == 0) buffer.write('.');
+      buffer.write(teks[i]);
+    }
+    return 'Rp $buffer';
+  }
+
   // Fungsi untuk menyalin nomor VA ke Clipboard & menampilkan SnackBar
   void _copyToClipboard() {
     Clipboard.setData(ClipboardData(text: _vaNumber));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Row(
-          children: const [
+        content: const Row(
+          children: [
             Icon(Icons.check_circle, color: Colors.white),
             SizedBox(width: 10),
             Text('Nomor VA BNI berhasil disalin!'),
@@ -99,229 +135,248 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AppThemeMode>(
-      valueListenable: appThemeNotifier,
-      builder: (context, currentTheme, child) {
-        // Penyesuaian Warna Tema (Light, Dark, LGBT)
-        final bool isDark = currentTheme == AppThemeMode.dark;
-        final bool isLgbt = currentTheme == AppThemeMode.lgbt;
-
-        final Color textColor = isDark ? Colors.white : const Color(0xFF1E293B);
-        final Color subTextColor = isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8);
-        final Color cardColor = isDark
-            ? const Color(0xFF1E1E1E)
-            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
-
+    return ThemeBuilder(
+      builder: (context, p) {
         // Menentukan berapa banyak transaksi yang ditampilkan
-        final visibleTransactions =
-            _isExpanded ? _allTransactions : _allTransactions.take(3).toList();
+        final visibleTransactions = _isExpanded
+            ? _allTransactions
+            : _allTransactions.take(3).toList();
 
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-            child: Column(
-              children: [
-                Text(
-                  'Keuangan',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
+        return Container(
+          decoration: p.backgroundDecoration,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 16.0,
                 ),
-                const SizedBox(height: 24),
-
-                // --- CARD VIRTUAL ACCOUNT BNI ---
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFF97316), Color(0xFFEA580C)],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orange.withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: const [
-                              Icon(Icons.account_balance, color: Colors.white, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'VIRTUAL ACCOUNT BNI',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Badge Status Aktif
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text(
-                              'AKTIF',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            '8001 2345 6789',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                          // Tombol Salin VA
-                          InkWell(
-                            onTap: _copyToClipboard,
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(Icons.copy, color: Colors.white, size: 20),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // --- HEADER RIWAYAT TAGIHAN ---
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
                     Text(
-                      'RIWAYAT TAGIHAN',
+                      'Keuangan',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: subTextColor,
+                        color: p.textPrimary,
                       ),
                     ),
+                    const SizedBox(height: 24),
+
+                    // --- CARD VIRTUAL ACCOUNT BNI ---
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        'Total Tagihan: Rp 0',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.greenAccent : Colors.black54,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFF97316), Color(0xFFEA580C)],
                         ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withValues(alpha: 0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // --- LIST TRANSAKSI (EXPANDABLE) ---
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: cardColor,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      // Render daftar transaksi yang terlihat
-                      ...visibleTransactions.map((item) {
-                        return _buildTransaction(
-                          item['title'],
-                          item['subtitle'],
-                          item['amount'],
-                          item['balance'],
-                          item['isIncome'],
-                          textColor,
-                          subTextColor,
-                        );
-                      }),
-
-                      const Divider(height: 1, thickness: 0.5, color: Color(0xFFF1F5F9)),
-
-                      // Tombol Toggle "Lihat Semua" / "Sembunyikan"
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isExpanded = !_isExpanded;
-                          });
-                        },
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                _isExpanded
-                                    ? 'Sembunyikan Transaksi'
-                                    : 'Lihat Semua Transaksi (${_allTransactions.length})',
-                                style: TextStyle(
-                                  color: Colors.blue.shade600,
-                                  fontWeight: FontWeight.bold,
+                              const Expanded(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.account_balance,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        'VIRTUAL ACCOUNT BNI',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 6),
-                              Icon(
-                                _isExpanded
-                                    ? Icons.keyboard_arrow_up
-                                    : Icons.keyboard_arrow_down,
-                                color: Colors.blue.shade600,
+                              // Badge Status Aktif
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Text(
+                                  'AKTIF',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Expanded(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '8001 2345 6789',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Tombol Salin VA
+                              InkWell(
+                                onTap: _copyToClipboard,
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.copy,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // --- HEADER RIWAYAT TAGIHAN ---
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'RIWAYAT TAGIHAN',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: p.textSecondary,
+                            ),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: p.chipBackground,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'Total Tagihan: ${_rupiah(_sisaTagihan)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: _sisaTagihan == 0 ? p.success : p.danger,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // --- LIST TRANSAKSI (EXPANDABLE) ---
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: p.cardDeco(),
+                      child: Column(
+                        children: [
+                          // Render daftar transaksi yang terlihat
+                          ...visibleTransactions.map(
+                            (item) => _buildTransaction(
+                              p,
+                              item['title'],
+                              item['subtitle'],
+                              item['amount'],
+                              item['balance'],
+                              item['isIncome'],
+                            ),
+                          ),
+
+                          Divider(height: 1, thickness: 0.5, color: p.divider),
+
+                          // Tombol Toggle "Lihat Semua" / "Sembunyikan"
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _isExpanded = !_isExpanded;
+                              });
+                            },
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      _isExpanded
+                                          ? 'Sembunyikan Transaksi'
+                                          : 'Lihat Semua Transaksi (${_allTransactions.length})',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: p.accentText,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Icon(
+                                    _isExpanded
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
+                                    color: p.accentText,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -330,34 +385,41 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
   }
 
   Widget _buildTransaction(
+    AppPalette p,
     String title,
     String subtitle,
     String amount,
     String balance,
     bool isIncome,
-    Color textColor,
-    Color subTextColor,
   ) {
+    final warna = isIncome ? kHadir : kAlpa;
+
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: isIncome ? Colors.green.shade50 : Colors.red.shade50,
+          // Sebelumnya Colors.green.shade50 / red.shade50 — nyaris hilang
+          // di Dark Mode. Sekarang pakai alpha supaya tetap terlihat.
+          color: warna.withValues(alpha: 0.15),
           shape: BoxShape.circle,
         ),
         child: Icon(
           isIncome ? Icons.payments : Icons.receipt_long,
-          color: isIncome ? Colors.green : Colors.red,
+          color: warna,
           size: 20,
         ),
       ),
       title: Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: textColor),
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: p.textPrimary,
+        ),
       ),
       subtitle: Text(
         subtitle,
-        style: TextStyle(fontSize: 12, color: subTextColor),
+        style: TextStyle(fontSize: 12, color: p.textSecondary),
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -368,13 +430,10 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
-              color: isIncome ? Colors.green : Colors.red,
+              color: warna,
             ),
           ),
-          Text(
-            balance,
-            style: TextStyle(fontSize: 10, color: subTextColor),
-          ),
+          Text(balance, style: TextStyle(fontSize: 10, color: p.textSecondary)),
         ],
       ),
     );

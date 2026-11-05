@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/screens/dashboard_screen.dart';
 import 'package:app_kampus/screens/akademik_screen.dart';
 import 'package:app_kampus/screens/perkuliahan_screen.dart';
 import 'package:app_kampus/screens/keuangan_screen.dart';
 import 'package:app_kampus/screens/akun_screen.dart';
-import 'package:app_kampus/theme_notifier.dart'; // Import pusat tema global
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,12 +18,12 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   // Daftar 5 halaman sesuai desain
-  final List<Widget> _pages = [
-    const DashboardScreen(),
-    const AkademikScreen(),
-    const PerkuliahanScreen(),
-    const KeuanganScreen(),
-    const AkunScreen(),
+  static const List<Widget> _pages = [
+    DashboardScreen(),
+    AkademikScreen(),
+    PerkuliahanScreen(),
+    KeuanganScreen(),
+    AkunScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -33,49 +34,57 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Bungkus dengan ValueListenableBuilder (Pasang Telinga)
-    return ValueListenableBuilder<AppThemeMode>(
-      valueListenable: appThemeNotifier,
-      builder: (context, currentTheme, child) {
-        
-        // 2. Cek status tema saat ini
-        final bool isDark = currentTheme == AppThemeMode.dark;
-        final bool isLgbt = currentTheme == AppThemeMode.lgbt;
+    return ThemeBuilder(
+      builder: (context, p) {
+        final Color unselectedColor = p.textSecondary;
+        final Color selectedColor = p.isLgbt ? Colors.purpleAccent : p.accent;
 
-        // 3. Siapkan warna dinamis
-        // Jika Dark = abu-abu gelap, jika LGBT = putih transparan, default = putih bersih
-        final Color navBackgroundColor = isDark 
-            ? const Color(0xFF1E1E1E) 
-            : (isLgbt ? Colors.white.withValues(alpha: 0.85) : Colors.white);
-            
-        // Warna untuk icon yang TIDAK diklik
-        final Color unselectedColor = isDark ? Colors.grey.shade500 : Colors.grey;
-        
-        // Warna untuk icon yang SEDANG diklik
-        final Color selectedColor = isLgbt ? Colors.purpleAccent : Colors.blueAccent;
-
-        // 4. Return Scaffold kamu yang asli, tapi sekarang warnanya dinamis
-        return Scaffold(
-          body: _pages[_selectedIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            // --- TAMBAHAN BARU: Masukkan warna background navbar di sini ---
-            backgroundColor: navBackgroundColor, 
-            
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-            
-            // --- GANTI WARNA STATIS DENGAN VARIABEL ---
-            selectedItemColor: selectedColor,
-            unselectedItemColor: unselectedColor,
-            
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Dashboard'),
-              BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Akademik'),
-              BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Perkuliahan'),
-              BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: 'Keuangan'),
-              BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Akun'),
-            ],
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: p.overlay,
+          child: Scaffold(
+            // IndexedStack: semua tab tetap hidup, jadi posisi scroll dan isi
+            // form tidak hilang saat berpindah tab. Sebelumnya
+            // `body: _pages[_selectedIndex]` membangun ulang halaman dari nol
+            // setiap kali tab diganti.
+            body: IndexedStack(index: _selectedIndex, children: _pages),
+            bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: p.card,
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: selectedColor,
+              unselectedItemColor: unselectedColor,
+              // Font-size bawaan Flutter adalah 14 untuk tab aktif dan 12 untuk
+              // yang lain. Begitu tab diketuk, labelnya membesar 2pt dan seluruh
+              // baris bergeser — itu yang bikin navbar terlihat "tidak rata".
+              // Lebih parah: "Perkuliahan" di slot 72dp terpotong jadi
+              // "Perkuliah…" saat terpilih. Disamakan jadi 11.5 supaya muat
+              // dan tidak ada pergeseran.
+              selectedFontSize: 11.5,
+              unselectedFontSize: 11.5,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Dashboard',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_today),
+                  label: 'Akademik',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.menu_book),
+                  label: 'Perkuliahan',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_balance_wallet),
+                  label: 'Keuangan',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline),
+                  label: 'Akun',
+                ),
+              ],
+            ),
           ),
         );
       },

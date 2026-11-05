@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class PesanBaruScreen extends StatefulWidget {
   const PesanBaruScreen({super.key});
@@ -57,82 +59,85 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
-        appBar: AppBar(
-          title: const Text('Pesan', style: TextStyle(color: Colors.black, fontSize: 18)),
-          backgroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.black),
-          elevation: 0.5,
-          bottom: const TabBar(
-            labelColor: Colors.blue,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: Colors.blue,
-            tabs: [
-              Tab(icon: Icon(Icons.inbox), text: 'Kotak Masuk'),
-              Tab(icon: Icon(Icons.edit_square), text: 'Tulis Pesan'),
-            ],
+    return ThemeBuilder(
+      builder: (context, p) => DefaultTabController(
+        length: 2,
+        child: Container(
+          decoration: p.backgroundDecoration,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              title: Text('Pesan', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+              backgroundColor: p.card,
+              foregroundColor: p.textPrimary,
+              iconTheme: IconThemeData(color: p.textPrimary),
+              elevation: 0.5,
+              bottom: TabBar(
+                labelColor: Colors.blue,
+                unselectedLabelColor: p.textSecondary,
+                indicatorColor: Colors.blue,
+                tabs: const [
+                  Tab(icon: Icon(Icons.inbox), text: 'Kotak Masuk'),
+                  Tab(icon: Icon(Icons.edit_square), text: 'Tulis Pesan'),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                _buildKotakMasukTab(p),
+                _buildTulisPesanTab(p),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            _buildKotakMasukTab(),
-            _buildTulisPesanTab(),
-          ],
         ),
       ),
     );
   }
 
-  Widget _buildKotakMasukTab() {
+  Widget _buildKotakMasukTab(AppPalette p) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.drafts_outlined, size: 80, color: Colors.grey.shade300),
+          Icon(Icons.drafts_outlined, size: 80, color: p.textSecondary),
           const SizedBox(height: 16),
-          Text('Tidak Ada Pesan Masuk', style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.bold)),
+          Text('Tidak Ada Pesan Masuk', style: TextStyle(fontSize: 16, color: p.textSecondary, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text('Pesan dari dosen atau kampus akan muncul di sini', style: TextStyle(fontSize: 13, color: Colors.grey.shade400)),
+          Text('Pesan dari dosen atau kampus akan muncul di sini', style: TextStyle(fontSize: 13, color: p.textMuted)),
         ],
       ),
     );
   }
 
-  Widget _buildTulisPesanTab() {
+  Widget _buildTulisPesanTab(AppPalette p) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4))],
-        ),
+        decoration: p.cardDeco(radius: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Tujuan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey)),
+            Text('Tujuan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.textSecondary)),
             const SizedBox(height: 8),
             // --- DROPDOWN KATEGORI ---
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(color: p.border),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: _tujuanTerpilih,
-                  hint: const Text('-----', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)), // Sesuai website
+                  hint: Text('-----', style: TextStyle(color: p.textPrimary, fontWeight: FontWeight.bold)), // Sesuai website
                   isExpanded: true,
+                  dropdownColor: p.card,
                   icon: const Icon(Icons.arrow_drop_down, color: Colors.blue),
                   items: _pilihanTujuan.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                      child: Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: p.textPrimary)),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -147,20 +152,21 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
             const SizedBox(height: 20),
 
             // --- KOLOM DINAMIS (Muncul sesuai pilihan dropdown) ---
-            _buildKolomPenerimaDinamis(),
+            _buildKolomPenerimaDinamis(p),
 
-            const Text('Isi Pesan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey)),
+            Text('Isi Pesan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.textSecondary)),
             const SizedBox(height: 8),
             // --- FORM ISI PESAN ---
             TextFormField(
               controller: _isiPesanCtrl,
               maxLines: 8,
+              style: TextStyle(color: p.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Tulis pesan Anda di sini...',
-                hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                hintStyle: TextStyle(color: p.textSecondary, fontSize: 14),
                 filled: true,
-                fillColor: Colors.grey.shade50,
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
+                fillColor: p.inputFill,
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: p.border)),
                 focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.blue, width: 2)),
               ),
             ),
@@ -181,9 +187,9 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      side: const BorderSide(color: Colors.grey),
+                      side: BorderSide(color: p.border),
                     ),
-                    child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                    child: Text('Batal', style: TextStyle(color: p.textSecondary, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -207,7 +213,7 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
   }
 
   // --- LOGIKA MUNCULNYA KOLOM BARU ---
-  Widget _buildKolomPenerimaDinamis() {
+  Widget _buildKolomPenerimaDinamis(AppPalette p) {
     // Jika belum memilih apapun, tidak ada kolom tambahan yang muncul
     if (_tujuanTerpilih == null) return const SizedBox.shrink();
 
@@ -237,17 +243,18 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(labelText, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.blue)),
+          Text(labelText, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.accentText)),
           const SizedBox(height: 8),
           TextFormField(
             controller: _penerimaSpesifikCtrl,
             keyboardType: keyboardType,
+            style: TextStyle(color: p.textPrimary),
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+              hintStyle: TextStyle(color: p.textSecondary, fontSize: 14),
               prefixIcon: Icon(iconData, color: Colors.blue),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: p.inputFill,
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.blue.shade200)),
               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.blue, width: 2)),
             ),

@@ -47,3 +47,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Artefak golden test yang gagal (masterImage/testImage/isolatedDiff).
+# Dibuat ulang tiap kali golden tidak cocok — jangan ikut di-commit.
+/test/failures/

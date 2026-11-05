@@ -240,10 +240,6 @@ class _IsiKrsScreenState extends State<IsiKrsScreen> {
         : (isDark ? Colors.white : Colors.black87);
 
     final Color descColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
-    
-    final Color radioColor = isSelected
-        ? Colors.blue
-        : (isDark ? Colors.grey.shade600 : Colors.grey.shade400);
 
     return InkWell(
       onTap: () {

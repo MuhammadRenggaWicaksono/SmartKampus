@@ -3,7 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
+		<true/>
+		<!-- Diperlukan image_picker: tanpa dua kunci ini, aplikasi crash saat
+		     membuka galeri / kamera di iOS. -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Aplikasi membutuhkan akses foto untuk mengunggah foto profil mahasiswa.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Aplikasi membutuhkan akses kamera untuk mengambil foto profil mahasiswa.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Aplikasi membutuhkan akses mikrofon saat merekam video dengan kamera.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

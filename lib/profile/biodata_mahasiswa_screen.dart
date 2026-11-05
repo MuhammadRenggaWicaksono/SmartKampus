@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/theme_builder.dart';
 
 class BiodataMahasiswaScreen extends StatefulWidget {
   const BiodataMahasiswaScreen({super.key});
@@ -65,116 +67,117 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        title: const Text('Biodata Mahasiswa', style: TextStyle(color: Colors.black, fontSize: 18)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        elevation: 0.5,
-        actions: [
-          // Tombol Edit / Simpan di Kanan Atas
-          TextButton.icon(
-            onPressed: _toggleEdit,
-            icon: Icon(
-              _isEditing ? Icons.check_circle : Icons.edit,
-              color: _isEditing ? Colors.green : Colors.blue,
-            ),
-            label: Text(
-              _isEditing ? 'Simpan' : 'Edit',
-              style: TextStyle(
-                color: _isEditing ? Colors.green : Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_isEditing)
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
-                child: Row(
-                  children: const [
-                    Icon(Icons.info_outline, color: Colors.blue),
-                    SizedBox(width: 8),
-                    Expanded(child: Text('Mode edit aktif. Ubah data lalu tekan Simpan.', style: TextStyle(color: Colors.blue))),
-                  ],
+    return ThemeBuilder(
+      builder: (context, p) => Container(
+        decoration: p.backgroundDecoration,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text('Biodata Mahasiswa', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            backgroundColor: p.card,
+            foregroundColor: p.textPrimary,
+            iconTheme: IconThemeData(color: p.textPrimary),
+            elevation: 0.5,
+            actions: [
+              // Tombol Edit / Simpan di Kanan Atas
+              TextButton.icon(
+                onPressed: _toggleEdit,
+                icon: Icon(
+                  _isEditing ? Icons.check_circle : Icons.edit,
+                  color: _isEditing ? p.success : p.accentText,
+                ),
+                label: Text(
+                  _isEditing ? 'Simpan' : 'Edit',
+                  style: TextStyle(
+                    color: _isEditing ? p.success : p.accentText,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_isEditing)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, color: p.accentText),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text('Mode edit aktif. Ubah data lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
+                      ],
+                    ),
+                  ),
 
-            // KELOMPOK 1: INFORMASI AKADEMIK
-            _buildSectionTitle('INFORMASI AKADEMIK'),
-            _buildCardGroup([
-              _buildTextField('NIM', _nimCtrl, Icons.badge_outlined, isReadOnly: true), // NIM biasanya gak bisa diedit
-              _buildTextField('Program Studi', _prodiCtrl, Icons.school_outlined, isReadOnly: true),
-              _buildTextField('Status Registrasi', _statusCtrl, Icons.verified_user_outlined, isReadOnly: true),
-              _buildTextField('Dosen Pembimbing Akademik', _dosenCtrl, Icons.supervisor_account_outlined, isReadOnly: true),
-            ]),
-            const SizedBox(height: 20),
+                // KELOMPOK 1: INFORMASI AKADEMIK
+                _buildSectionTitle('INFORMASI AKADEMIK', p),
+                _buildCardGroup(p, [
+                  _buildTextField(p, 'NIM', _nimCtrl, Icons.badge_outlined, isReadOnly: true), // NIM biasanya gak bisa diedit
+                  _buildTextField(p, 'Program Studi', _prodiCtrl, Icons.school_outlined, isReadOnly: true),
+                  _buildTextField(p, 'Status Registrasi', _statusCtrl, Icons.verified_user_outlined, isReadOnly: true),
+                  _buildTextField(p, 'Dosen Pembimbing Akademik', _dosenCtrl, Icons.supervisor_account_outlined, isReadOnly: true),
+                ]),
+                const SizedBox(height: 20),
 
-            // KELOMPOK 2: DATA PRIBADI
-            _buildSectionTitle('DATA PRIBADI'),
-            _buildCardGroup([
-              _buildTextField('Nama Lengkap', _namaCtrl, Icons.person_outline),
-              _buildTextField('Tempat Lahir', _tempatLahirCtrl, Icons.location_city),
-              _buildTextField('Tanggal Lahir', _tglLahirCtrl, Icons.calendar_today),
-              _buildTextField('Jenis Kelamin', _jkCtrl, Icons.wc),
-              _buildTextField('Agama', _agamaCtrl, Icons.favorite_border),
-            ]),
-            const SizedBox(height: 20),
+                // KELOMPOK 2: DATA PRIBADI
+                _buildSectionTitle('DATA PRIBADI', p),
+                _buildCardGroup(p, [
+                  _buildTextField(p, 'Nama Lengkap', _namaCtrl, Icons.person_outline),
+                  _buildTextField(p, 'Tempat Lahir', _tempatLahirCtrl, Icons.location_city),
+                  _buildTextField(p, 'Tanggal Lahir', _tglLahirCtrl, Icons.calendar_today),
+                  _buildTextField(p, 'Jenis Kelamin', _jkCtrl, Icons.wc),
+                  _buildTextField(p, 'Agama', _agamaCtrl, Icons.favorite_border),
+                ]),
+                const SizedBox(height: 20),
 
-            // KELOMPOK 3: KONTAK & ALAMAT
-            _buildSectionTitle('KONTAK & ALAMAT'),
-            _buildCardGroup([
-              _buildTextField('Email (Official)', _emailOffCtrl, Icons.email_outlined, isReadOnly: true),
-              _buildTextField('Email (Personal)', _emailPersCtrl, Icons.alternate_email),
-              _buildTextField('Nomor Telepon', _telpCtrl, Icons.phone_outlined, keyboardType: TextInputType.phone),
-              _buildTextField('Alamat Asal', _alamatAsalCtrl, Icons.home_outlined, maxLines: 2),
-              _buildTextField('Alamat Sekarang', _alamatSkrgCtrl, Icons.location_on_outlined, maxLines: 2),
-            ]),
-            const SizedBox(height: 30),
-          ],
+                // KELOMPOK 3: KONTAK & ALAMAT
+                _buildSectionTitle('KONTAK & ALAMAT', p),
+                _buildCardGroup(p, [
+                  _buildTextField(p, 'Email (Official)', _emailOffCtrl, Icons.email_outlined, isReadOnly: true),
+                  _buildTextField(p, 'Email (Personal)', _emailPersCtrl, Icons.alternate_email),
+                  _buildTextField(p, 'Nomor Telepon', _telpCtrl, Icons.phone_outlined, keyboardType: TextInputType.phone),
+                  _buildTextField(p, 'Alamat Asal', _alamatAsalCtrl, Icons.home_outlined, maxLines: 2),
+                  _buildTextField(p, 'Alamat Sekarang', _alamatSkrgCtrl, Icons.location_on_outlined, maxLines: 2),
+                ]),
+                const SizedBox(height: 30),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
   // Header tiap kelompok
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, AppPalette p) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary),
       ),
     );
   }
 
-  // Kartu putih pembungkus form
-  Widget _buildCardGroup(List<Widget> children) {
+  // Kartu pembungkus form
+  Widget _buildCardGroup(AppPalette p, List<Widget> children) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
-      ),
+      decoration: p.cardDeco(radius: 16),
       child: Column(children: children),
     );
   }
 
   // Desain Form Field
   Widget _buildTextField(
+    AppPalette p,
     String label,
     TextEditingController controller,
     IconData icon, {
@@ -193,27 +196,27 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
         maxLines: maxLines,
         keyboardType: keyboardType,
         style: TextStyle(
-          color: enabled ? Colors.black : Colors.grey.shade700,
+          color: enabled ? p.textPrimary : p.textSecondary,
           fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.grey),
-          prefixIcon: Icon(icon, color: enabled ? Colors.blue : Colors.grey.shade400),
+          labelStyle: TextStyle(color: p.textSecondary),
+          prefixIcon: Icon(icon, color: enabled ? p.accent : p.textSecondary),
           filled: true,
-          fillColor: enabled ? Colors.white : Colors.grey.shade50,
+          fillColor: enabled ? p.inputFill : p.surfaceAlt,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade200),
+            borderSide: BorderSide(color: p.border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: p.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.blue, width: 2),
+            borderSide: BorderSide(color: p.accent, width: 2),
           ),
         ),
       ),
