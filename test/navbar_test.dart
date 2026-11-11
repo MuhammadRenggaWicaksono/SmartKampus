@@ -10,6 +10,10 @@ import 'package:app_kampus/core/main_screen.dart';
 /// rata adalah FONT-SIZE: bawaan Flutter 14 untuk tab aktif vs 12 untuk yang
 /// lain, sehingga label membesar saat diketuk dan seluruh baris bergeser —
 /// plus "Perkuliahan" terpotong karena slotnya cuma 72dp.
+///
+/// Ukurannya sekarang 12.5pt untuk kedua state (naik dari 11.5pt, yang
+/// terbaca terlalu kecil sekilas). Batas atasnya bukan angka mati, tapi
+/// lebar slot: lihat pemeriksaan nomor 3.
 void main() {
   testWidgets('item navbar berjarak sama dan font-nya seragam', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
@@ -62,11 +66,16 @@ void main() {
 
     // 3. Label terpanjang harus muat di slotnya (72dp di layar 360dp).
     //    Kalau tidak muat, Flutter memotongnya jadi "Perkuliah...".
+    //    Lebar glyph Roboto ±0.53em per huruf kecil; "Perkuliahan" = 11
+    //    glyph, jadi ±5.4em. Batas ini yang menentukan ukuran font boleh
+    //    sebesar apa — bukan angka 12 atau 14.
     final slot = tester.getSize(bar).width / label.length;
+    final lebarLabelTerpanjang = widget.selectedFontSize * 5.4;
     expect(
-      widget.selectedFontSize,
-      lessThanOrEqualTo(12.0),
-      reason: 'font 14pt tidak muat di slot ${slot.toStringAsFixed(1)}dp',
+      lebarLabelTerpanjang,
+      lessThanOrEqualTo(slot),
+      reason: 'label terpanjang ±${lebarLabelTerpanjang.toStringAsFixed(1)}dp '
+          'tidak muat di slot ${slot.toStringAsFixed(1)}dp',
     );
 
     await tester.pumpWidget(const SizedBox());

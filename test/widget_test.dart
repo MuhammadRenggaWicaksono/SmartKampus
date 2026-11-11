@@ -98,22 +98,40 @@ void main() {
       await pumpDashboard(tester);
 
       expect(find.text('SKS DIAMBIL'), findsOneWidget);
-      expect(find.text('${AppData.sksSemesterIni} SKS'), findsOneWidget);
+      expect(find.text('sisa ${AppData.sksSisa} SKS'), findsOneWidget);
       expect(find.text(AppData.labelSksTotal), findsOneWidget);
       expect(find.text('${AppData.sksDitempuh} / $kSksTargetLulus'), findsOneWidget);
       expect(find.text('116 / 144'), findsOneWidget);
+
+      // sel bento: bar SKS, chip tagihan, dan selisih terhadap target IPS
+      expect(find.text('${AppData.persenTerbayar}% dibayar'), findsOneWidget);
+      expect(
+        find.text(AppData.tagihanLunas ? 'LUNAS' : 'BELUM LUNAS'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          '${AppData.selisihTargetIps >= 0 ? '+' : '-'}'
+          '${AppData.selisihTargetIps.abs().toStringAsFixed(2)}',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Target ${AppData.targetIps.toStringAsFixed(2)}'),
+        findsOneWidget,
+      );
 
       // matikan timer periodik di dalam dashboard
       await tester.pumpWidget(const SizedBox());
     });
 
-    testWidgets('menampilkan statistik, menu cepat, dan info IPK', (
+    testWidgets('menampilkan statistik, pengumuman, dan info IPK', (
       tester,
     ) async {
       _pasangLayar(tester);
       await pumpDashboard(tester);
 
-      expect(find.text('Menu Cepat'), findsOneWidget);
+      expect(find.text('Pengumuman'), findsOneWidget);
       expect(find.text('Statistik Akademik'), findsOneWidget);
       expect(find.text('IPK'), findsOneWidget);
       expect(find.text(AppData.ipk.toStringAsFixed(2)), findsOneWidget);
@@ -130,7 +148,7 @@ void main() {
         appThemeNotifier.value = mode;
         await tester.pump(const Duration(milliseconds: 400));
         expect(tester.takeException(), isNull);
-        expect(find.text('Menu Cepat'), findsOneWidget);
+        expect(find.text('Pengumuman'), findsOneWidget);
       }
 
       await tester.pumpWidget(const SizedBox());

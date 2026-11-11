@@ -44,6 +44,25 @@ void main() {
     );
   });
 
+  testWidgets('potret dashboard (light)', (tester) async {
+    tester.view.physicalSize = const Size(1080, 4200);
+    tester.view.devicePixelRatio = 3.0;
+    addTearDown(tester.view.reset);
+
+    appThemeNotifier.value = AppThemeMode.light;
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: DashboardScreen())),
+    );
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await expectLater(
+      find.byType(DashboardScreen),
+      matchesGoldenFile('goldens/dashboard_light.png'),
+    );
+
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('potret dashboard (dark)', (tester) async {
     tester.view.physicalSize = const Size(1080, 4200);
     tester.view.devicePixelRatio = 3.0;

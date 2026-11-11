@@ -259,7 +259,7 @@ class AkademikScreen extends StatelessWidget {
                       'Semester ${AppData.sksPerSemester.length}',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -268,7 +268,7 @@ class AkademikScreen extends StatelessWidget {
                       AppData.semesterAktif,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.85),
-                        fontSize: 11.5,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -298,9 +298,9 @@ class AkademikScreen extends StatelessWidget {
             label,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.75),
-              fontSize: 9.5,
+              fontSize: 10.5,
               fontWeight: FontWeight.bold,
-              letterSpacing: 0.6,
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 4),
@@ -308,7 +308,7 @@ class AkademikScreen extends StatelessWidget {
             nilai,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),

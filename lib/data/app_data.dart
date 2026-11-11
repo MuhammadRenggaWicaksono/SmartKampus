@@ -8,6 +8,8 @@
 //
 // Sekarang semuanya di sini. Ketika API kampus siap, cukup ganti isi file ini.
 
+import 'keuangan_data.dart';
+
 /// Target SKS kelulusan program studi.
 const int kSksTargetLulus = 144;
 
@@ -150,8 +152,21 @@ class AppData {
   static const String semesterAktif = 'Semester Ganjil 2026/2027';
   static const String semesterAktifSingkat = 'Ganjil 2026/2027';
   static const String statusMahasiswa = 'Mahasiswa Aktif';
-  static const String statusTagihan = 'Lunas';
-  static const String sisaTagihan = 'Rp 0';
+
+  /// Teks kartu TAGIHAN di Dashboard. Diturunkan dari ledger asli di
+  /// `lib/data/keuangan_data.dart`, bukan konstanta — dulu di-hardcode
+  /// 'Lunas' / 'Rp 0' sehingga tetap tampil "Lunas" padahal halaman
+  /// Keuangan menunjukkan tunggakan Rp 3.000.000.
+  static String get statusTagihan =>
+      KeuanganData.rupiahRingkas(KeuanganData.tunggakan);
+
+  static String get sisaTagihan =>
+      KeuanganData.tunggakan > 0 ? 'belum lunas' : 'semua lunas';
+
+  static bool get tagihanLunas => KeuanganData.tunggakan == 0;
+
+  /// Persentase tagihan yang sudah dibayar (0-100), mis. 92.
+  static int get persenTerbayar => (KeuanganData.rasioTerbayar * 100).round();
 
   /// Inisial untuk avatar (tanpa foto profil).
   static String get inisial {
@@ -427,6 +442,10 @@ class AppData {
     if (sks == 0) return 0;
     return double.parse((bobot / sks).toStringAsFixed(2));
   }
+
+  /// Selisih IPK terhadap [targetIps] — mis. +0.18.
+  static double get selisihTargetIps =>
+      double.parse((ipk - targetIps).toStringAsFixed(2));
 
   // --------------------------------------------- rekap pertemuan & absen
   static int get totalPertemuanTerlaksana =>

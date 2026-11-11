@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:app_kampus/data/pengumuman_model.dart';
 import 'package:app_kampus/data/supabase_config.dart';
 
 // ============================================================================
@@ -403,6 +404,26 @@ class SupabaseService {
         .order('hari', ascending: true)
         .order('jam_mulai', ascending: true);
     return rows.map(KelasKuliahDb.fromMap).toList();
+  }
+
+  /// Feed pengumuman untuk dashboard, terbaru dan yang penting duluan.
+  ///
+  /// Kolom diambil eksplisit — `dibuat_oleh` bukan urusan layar ini.
+  /// Penyaringan tanggal (belum terbit / sudah lewat) sengaja dilakukan di
+  /// Dart, bukan lewat `or=(...)` PostgREST, supaya tidak bergantung pada
+  /// sintaks filter yang beda antar versi.
+  static Future<List<Pengumuman>> daftarPengumuman({int batas = 20}) async {
+    if (!_siap || !sudahLogin) return const <Pengumuman>[];
+    final rows = await _c
+        .from(SupabaseConfig.tPengumuman)
+        .select(
+          'id, judul, isi, kategori, url, tanggal_mulai, tanggal_selesai, '
+          'is_penting',
+        )
+        .order('is_penting', ascending: false)
+        .order('tanggal_mulai', ascending: false)
+        .limit(batas);
+    return rows.map(Pengumuman.fromMap).toList();
   }
 
   /// Berapa banyak baris `profiles` yang bisa dilihat user ini.
