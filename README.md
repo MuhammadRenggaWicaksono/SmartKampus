@@ -18,7 +18,7 @@ Sebuah aplikasi *mobile* berbasis **Flutter** yang dirancang khusus untuk memuda
 - **🎨 Global Theme Switcher:** Mendukung kustomisasi tampilan tingkat lanjut dengan 3 mode warna (menggunakan `ValueNotifier`):
   - ☀️ **Light Mode:** Tampilan terang yang bersih dan minimalis.
   - 🌙 **Dark Mode:** Tampilan gelap yang nyaman untuk mata.
-  - 🌈 **LGBT Mode:** Tampilan eksperimental dengan *gradient background* pelangi dan elemen *glassmorphism*.
+  - 🌈 **LGBT Mode:** Tampilan eksperimental dengan *gradient background* pelangi dan elemen *glassmorphism*.🤣🤣🤣
 
 ---
 
