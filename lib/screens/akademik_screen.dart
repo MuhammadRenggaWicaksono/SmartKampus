@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/akademik/skripsi_screen.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
 import 'package:app_kampus/data/skripsi_store.dart';
@@ -31,165 +32,172 @@ class AkademikScreen extends StatelessWidget {
             automaticallyImplyLeading: false,
             iconTheme: IconThemeData(color: p.textPrimary),
           ),
-          body: ValueListenableBuilder<List<PengajuanSkripsi>>(
-            valueListenable: SkripsiStore.pengajuan,
-            builder: (context, pengajuanSkripsi, _) => ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
-              children: [
-                _buildRingkasan(p),
-                const SizedBox(height: 22),
+          // Bantalan pegang ListView sendiri (persis seperti sebelum
+          // dibungkus) supaya tampilan HP tidak bergeser; KontenLayar
+          // hanya menambah bantalan saat jendela lebar.
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: const EdgeInsets.all(12),
+            child: ValueListenableBuilder<List<PengajuanSkripsi>>(
+              valueListenable: SkripsiStore.pengajuan,
+              builder: (context, pengajuanSkripsi, _) => ListView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
+                children: [
+                  _buildRingkasan(p),
+                  const SizedBox(height: 22),
 
-                // --- KELOMPOK 1: KRS ---
-                _buildSectionHeader(
-                  p,
-                  ikon: Icons.edit_note,
-                  warna: Colors.orange,
-                  judul: 'Kartu Rencana Studi (KRS)',
-                  keterangan: 'Pengisian dan riwayat rencana studi',
-                ),
-                const SizedBox(height: 10),
-                _buildMenuGroup(
-                  p,
-                  children: [
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.edit_document,
-                      warna: Colors.orange,
-                      judul: 'Entri KRS',
-                      keterangan: 'Ajukan atau ubah KRS semester berjalan',
-                      lencana: 'Belum diajukan',
-                      warnaLencana: p.warning,
-                      onTap: () => Navigator.push(
+                  // --- KELOMPOK 1: KRS ---
+                  _buildSectionHeader(
+                    p,
+                    ikon: Icons.edit_note,
+                    warna: Colors.orange,
+                    judul: 'Kartu Rencana Studi (KRS)',
+                    keterangan: 'Pengisian dan riwayat rencana studi',
+                  ),
+                  const SizedBox(height: 10),
+                  _buildMenuGroup(
+                    p,
+                    children: [
+                      _buildMenuItem(
                         context,
-                        MaterialPageRoute(builder: (_) => const IsiKrsScreen()),
-                      ),
-                    ),
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.assignment_turned_in,
-                      warna: Colors.blue,
-                      judul: 'Lihat KRS',
-                      keterangan: 'Daftar mata kuliah yang sudah diambil',
-                      lencana: '${AppData.sksSemesterIni} SKS',
-                      warnaLencana: p.accent,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const LihatKrsScreen(),
+                        p,
+                        ikon: Icons.edit_document,
+                        warna: Colors.orange,
+                        judul: 'Entri KRS',
+                        keterangan: 'Ajukan atau ubah KRS semester berjalan',
+                        lencana: 'Belum diajukan',
+                        warnaLencana: p.warning,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const IsiKrsScreen()),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 22),
+                      _buildMenuItem(
+                        context,
+                        p,
+                        ikon: Icons.assignment_turned_in,
+                        warna: Colors.blue,
+                        judul: 'Lihat KRS',
+                        keterangan: 'Daftar mata kuliah yang sudah diambil',
+                        lencana: '${AppData.sksSemesterIni} SKS',
+                        warnaLencana: p.accent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LihatKrsScreen(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 22),
 
-                // --- KELOMPOK 2: NILAI ---
-                _buildSectionHeader(
-                  p,
-                  ikon: Icons.workspace_premium_outlined,
-                  warna: Colors.green,
-                  judul: 'Hasil Studi & Nilai',
-                  keterangan: 'Nilai akhir, IPS, dan rekap beban SKS',
-                ),
-                const SizedBox(height: 10),
-                _buildMenuGroup(
-                  p,
-                  children: [
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.grade,
-                      warna: Colors.green,
-                      judul: 'Lihat KHS',
-                      keterangan: 'Nilai per mata kuliah beserta IPS',
-                      lencana: 'IPS ${AppData.ipk.toStringAsFixed(2)}',
-                      warnaLencana: p.success,
-                      onTap: () => Navigator.push(
+                  // --- KELOMPOK 2: NILAI ---
+                  _buildSectionHeader(
+                    p,
+                    ikon: Icons.workspace_premium_outlined,
+                    warna: Colors.green,
+                    judul: 'Hasil Studi & Nilai',
+                    keterangan: 'Nilai akhir, IPS, dan rekap beban SKS',
+                  ),
+                  const SizedBox(height: 10),
+                  _buildMenuGroup(
+                    p,
+                    children: [
+                      _buildMenuItem(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const LihatKhsScreen(),
+                        p,
+                        ikon: Icons.grade,
+                        warna: Colors.green,
+                        judul: 'Lihat KHS',
+                        keterangan: 'Nilai per mata kuliah beserta IPS',
+                        lencana: 'IPS ${AppData.ipk.toStringAsFixed(2)}',
+                        warnaLencana: p.success,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LihatKhsScreen(),
+                          ),
                         ),
                       ),
-                    ),
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.analytics,
-                      warna: Colors.purple,
-                      judul: 'Rekap Nilai',
-                      keterangan: 'Transkrip dan total SKS yang ditempuh',
-                      lencana: '${AppData.sksDitempuh} SKS',
-                      warnaLencana: p.accent,
-                      onTap: () => Navigator.push(
+                      _buildMenuItem(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const TranskripScreen(),
+                        p,
+                        ikon: Icons.analytics,
+                        warna: Colors.purple,
+                        judul: 'Rekap Nilai',
+                        keterangan: 'Transkrip dan total SKS yang ditempuh',
+                        lencana: '${AppData.sksDitempuh} SKS',
+                        warnaLencana: p.accent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const TranskripScreen(),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 22),
+                    ],
+                  ),
+                  const SizedBox(height: 22),
 
-                // --- KELOMPOK 3: TUGAS AKHIR & PRAKTIK ---
-                _buildSectionHeader(
-                  p,
-                  ikon: Icons.rocket_launch_outlined,
-                  warna: Colors.teal,
-                  judul: 'Tugas Akhir & Praktik',
-                  keterangan: 'Kerja Praktik, KKN, dan penyusunan skripsi',
-                ),
-                const SizedBox(height: 10),
-                _buildMenuGroup(
-                  p,
-                  children: [
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.work_history,
-                      warna: Colors.teal,
-                      judul: 'Kerja Praktik (KP)',
-                      keterangan: 'Magang di instansi atau industri mitra',
-                      lencana: 'Segera',
-                      warnaLencana: p.textMuted,
-                      onTap: () => _belumTersedia(context, p, 'Kerja Praktik'),
-                    ),
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.groups,
-                      warna: Colors.brown,
-                      judul: 'KKN',
-                      keterangan: 'Kuliah Kerja Nyata tematik',
-                      lencana: 'Segera',
-                      warnaLencana: p.textMuted,
-                      onTap: () => _belumTersedia(context, p, 'KKN'),
-                    ),
-                    _buildMenuItem(
-                      context,
-                      p,
-                      ikon: Icons.school,
-                      warna: Colors.indigo,
-                      judul: 'Skripsi',
-                      keterangan: 'Pengajuan judul, pembimbing, dan tahapan',
-                      lencana: pengajuanSkripsi.isEmpty
-                          ? 'Belum diajukan'
-                          : '${pengajuanSkripsi.length} judul diajukan',
-                      warnaLencana: pengajuanSkripsi.isEmpty
-                          ? p.warning
-                          : p.accent,
-                      onTap: () => Navigator.push(
+                  // --- KELOMPOK 3: TUGAS AKHIR & PRAKTIK ---
+                  _buildSectionHeader(
+                    p,
+                    ikon: Icons.rocket_launch_outlined,
+                    warna: Colors.teal,
+                    judul: 'Tugas Akhir & Praktik',
+                    keterangan: 'Kerja Praktik, KKN, dan penyusunan skripsi',
+                  ),
+                  const SizedBox(height: 10),
+                  _buildMenuGroup(
+                    p,
+                    children: [
+                      _buildMenuItem(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const SkripsiScreen(),
+                        p,
+                        ikon: Icons.work_history,
+                        warna: Colors.teal,
+                        judul: 'Kerja Praktik (KP)',
+                        keterangan: 'Magang di instansi atau industri mitra',
+                        lencana: 'Segera',
+                        warnaLencana: p.textMuted,
+                        onTap: () => _belumTersedia(context, p, 'Kerja Praktik'),
+                      ),
+                      _buildMenuItem(
+                        context,
+                        p,
+                        ikon: Icons.groups,
+                        warna: Colors.brown,
+                        judul: 'KKN',
+                        keterangan: 'Kuliah Kerja Nyata tematik',
+                        lencana: 'Segera',
+                        warnaLencana: p.textMuted,
+                        onTap: () => _belumTersedia(context, p, 'KKN'),
+                      ),
+                      _buildMenuItem(
+                        context,
+                        p,
+                        ikon: Icons.school,
+                        warna: Colors.indigo,
+                        judul: 'Skripsi',
+                        keterangan: 'Pengajuan judul, pembimbing, dan tahapan',
+                        lencana: pengajuanSkripsi.isEmpty
+                            ? 'Belum diajukan'
+                            : '${pengajuanSkripsi.length} judul diajukan',
+                        warnaLencana: pengajuanSkripsi.isEmpty
+                            ? p.warning
+                            : p.accent,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SkripsiScreen(),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

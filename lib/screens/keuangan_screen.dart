@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
 import 'package:app_kampus/data/keuangan_data.dart';
@@ -78,28 +79,30 @@ class _KeuanganScreenState extends State<KeuanganScreen> {
             backgroundColor: Colors.transparent,
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(p),
-                    const SizedBox(height: 24),
-                    _buildRingkasan(p),
-                    const SizedBox(height: 16),
-                    _buildKartuVa(p),
-                    const SizedBox(height: 24),
-                    _buildJudulRiwayat(p),
-                    const SizedBox(height: 12),
-                    ...KeuanganData.perSemester.map(
-                      (s) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _buildKartuSemester(p, s),
+                child: KontenLayar(
+                  paddingHp: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(p),
+                      const SizedBox(height: 24),
+                      _buildRingkasan(p),
+                      const SizedBox(height: 16),
+                      _buildKartuVa(p),
+                      const SizedBox(height: 24),
+                      _buildJudulRiwayat(p),
+                      const SizedBox(height: 12),
+                      ...KeuanganData.perSemester.map(
+                        (s) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _buildKartuSemester(p, s),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    _buildRekap(p),
-                    const SizedBox(height: 8),
-                  ],
+                      const SizedBox(height: 4),
+                      _buildRekap(p),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 
 class LihatKrsScreen extends StatefulWidget {
@@ -125,113 +126,116 @@ class _LihatKrsScreenState extends State<LihatKrsScreen> {
             ),
             
             // --- BODY ---
-            body: Column(
-              children: [
-                // --- FILTER SECTION ---
-                Container(
-                  color: p.card,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
-                                const SizedBox(height: 6),
-                                _buildDropdown(
-                                  p: p,
-                                  value: _tahunTerpilih,
-                                  items: _listTahun,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _tahunTerpilih = val!;
-                                      _isDataTampil = false;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
-                                const SizedBox(height: 6),
-                                _buildDropdown(
-                                  p: p,
-                                  value: _semesterTerpilih,
-                                  items: _listSemester,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _semesterTerpilih = val!;
-                                      _isDataTampil = false;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isLoading ? null : _prosesData,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue.shade700,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            elevation: 0,
-                          ),
-                          child: _isLoading 
-                            ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                            : const Text('Tampilkan Data KRS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // --- HASIL SECTION ---
-                Expanded(
-                  child: !_isDataTampil 
-                      ? _buildEmptyState(p) 
-                      : (dataKrs == null || dataKrs.isEmpty) 
-                          ? _buildErrorState(p) 
-                          : _buildListKrs(p, dataKrs),
-                ),
-                
-                // --- FOOTER TOTAL SKS (Hanya tampil jika ada data) ---
-                if (_isDataTampil && dataKrs != null && dataKrs.isNotEmpty)
+            body: KontenLayar(
+              paddingHp: EdgeInsets.zero,
+              paddingLebar: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  // --- FILTER SECTION ---
                   Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: p.card,
-                      boxShadow: [BoxShadow(color: p.shadow, blurRadius: 10, offset: const Offset(0, -5))],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    color: p.card,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    child: Column(
                       children: [
-                        Text('Total Beban SKS:', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: p.textPrimary)),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
+                                  const SizedBox(height: 6),
+                                  _buildDropdown(
+                                    p: p,
+                                    value: _tahunTerpilih,
+                                    items: _listTahun,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _tahunTerpilih = val!;
+                                        _isDataTampil = false;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
+                                  const SizedBox(height: 6),
+                                  _buildDropdown(
+                                    p: p,
+                                    value: _semesterTerpilih,
+                                    items: _listSemester,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _semesterTerpilih = val!;
+                                        _isDataTampil = false;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _prosesData,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade700,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              elevation: 0,
+                            ),
+                            child: _isLoading
+                              ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                              : const Text('Tampilkan Data KRS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
                           ),
-                          child: Text('$totalSks SKS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.accentText)),
                         ),
                       ],
                     ),
                   ),
-              ],
-            ),
+                
+                  // --- HASIL SECTION ---
+                  Expanded(
+                    child: !_isDataTampil
+                        ? _buildEmptyState(p)
+                        : (dataKrs == null || dataKrs.isEmpty)
+                            ? _buildErrorState(p)
+                            : _buildListKrs(p, dataKrs),
+                  ),
+                
+                  // --- FOOTER TOTAL SKS (Hanya tampil jika ada data) ---
+                  if (_isDataTampil && dataKrs != null && dataKrs.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: p.card,
+                        boxShadow: [BoxShadow(color: p.shadow, blurRadius: 10, offset: const Offset(0, -5))],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Total Beban SKS:', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: p.textPrimary)),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text('$totalSks SKS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.accentText)),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              )),
           ),
         );
       },

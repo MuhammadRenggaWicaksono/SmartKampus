@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 
 class PesanBaruScreen extends StatefulWidget {
@@ -82,12 +83,15 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
                 ],
               ),
             ),
-            body: TabBarView(
-              children: [
-                _buildKotakMasukTab(p),
-                _buildTulisPesanTab(p),
-              ],
-            ),
+            body: KontenLayar(
+              paddingHp: EdgeInsets.zero,
+              paddingLebar: EdgeInsets.zero,
+              child: TabBarView(
+                children: [
+                  _buildKotakMasukTab(p),
+                  _buildTulisPesanTab(p),
+                ],
+              )),
           ),
         ),
       ),

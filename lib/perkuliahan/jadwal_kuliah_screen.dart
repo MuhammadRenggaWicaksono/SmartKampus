@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
 import 'package:app_kampus/data/jadwal_data.dart';
@@ -127,33 +128,36 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
                 const SizedBox(width: 8),
               ],
             ),
-            body: Column(
-              children: [
-                if (hasil != null) _kepala(p, hasil),
-                if (_memuat && hasil != null)
-                  const LinearProgressIndicator(minHeight: 2),
-                Expanded(
-                  child: hasil == null
-                      ? const Center(child: CircularProgressIndicator())
-                      : RefreshIndicator(
-                          onRefresh: _muat,
-                          child: hasil.kosong
-                              ? _kosong(p, hasil)
-                              : ListView.builder(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    14,
-                                    16,
-                                    24,
+            body: KontenLayar(
+              paddingHp: EdgeInsets.zero,
+              paddingLebar: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  if (hasil != null) _kepala(p, hasil),
+                  if (_memuat && hasil != null)
+                    const LinearProgressIndicator(minHeight: 2),
+                  Expanded(
+                    child: hasil == null
+                        ? const Center(child: CircularProgressIndicator())
+                        : RefreshIndicator(
+                            onRefresh: _muat,
+                            child: hasil.kosong
+                                ? _kosong(p, hasil)
+                                : ListView.builder(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      16,
+                                      14,
+                                      16,
+                                      24,
+                                    ),
+                                    itemCount: hasil.hari.length,
+                                    itemBuilder: (context, index) =>
+                                        _seksiHari(p, hasil.hari[index]),
                                   ),
-                                  itemCount: hasil.hari.length,
-                                  itemBuilder: (context, index) =>
-                                      _seksiHari(p, hasil.hari[index]),
-                                ),
-                        ),
-                ),
-              ],
-            ),
+                          ),
+                  ),
+                ],
+              )),
           ),
         );
       },

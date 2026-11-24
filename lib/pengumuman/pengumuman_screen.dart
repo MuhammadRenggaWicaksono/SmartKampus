@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/pengumuman_model.dart';
 import 'package:app_kampus/data/pengumuman_store.dart';
@@ -41,64 +42,67 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
             iconTheme: IconThemeData(color: p.textPrimary),
             elevation: 0.5,
           ),
-          body: AnimatedBuilder(
-            animation: Listenable.merge([
-              PengumumanStore.daftar,
-              PengumumanStore.memuat,
-            ]),
-            builder: (context, _) {
-              final isi = PengumumanStore.daftar.value;
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: EdgeInsets.zero,
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                PengumumanStore.daftar,
+                PengumumanStore.memuat,
+              ]),
+              builder: (context, _) {
+                final isi = PengumumanStore.daftar.value;
 
-              if (isi.isEmpty && PengumumanStore.memuat.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (isi.isEmpty) {
-                return Center(
-                  child: Text(
-                    'Belum ada pengumuman.',
-                    style: TextStyle(color: p.textSecondary),
-                  ),
-                );
-              }
-
-              return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-                itemCount: isi.length + 1,
-                itemBuilder: (context, i) {
-                  if (i == isi.length) {
-                    return PengumumanStore.dariServer.value
-                        ? const SizedBox.shrink()
-                        : Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Text(
-                              'Contoh — tabel pengumuman di Supabase belum '
-                              'terhubung.',
-                              style: TextStyle(
-                                fontSize: 10.5,
-                                color: p.textMuted,
-                              ),
-                            ),
-                          );
-                  }
-                  final item = isi[i];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: KartuPengumuman(
-                      p: p,
-                      pengumuman: item,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              PengumumanDetailScreen(pengumuman: item),
-                        ),
-                      ),
+                if (isi.isEmpty && PengumumanStore.memuat.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (isi.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'Belum ada pengumuman.',
+                      style: TextStyle(color: p.textSecondary),
                     ),
                   );
-                },
-              );
-            },
-          ),
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+                  itemCount: isi.length + 1,
+                  itemBuilder: (context, i) {
+                    if (i == isi.length) {
+                      return PengumumanStore.dariServer.value
+                          ? const SizedBox.shrink()
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Text(
+                                'Contoh — tabel pengumuman di Supabase belum '
+                                'terhubung.',
+                                style: TextStyle(
+                                  fontSize: 10.5,
+                                  color: p.textMuted,
+                                ),
+                              ),
+                            );
+                    }
+                    final item = isi[i];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: KartuPengumuman(
+                        p: p,
+                        pengumuman: item,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                PengumumanDetailScreen(pengumuman: item),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            )),
         ),
       ),
     );

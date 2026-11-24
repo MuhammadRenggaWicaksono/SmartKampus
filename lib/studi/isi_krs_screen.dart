@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/theme_notifier.dart';
 
 class PilihMataKuliahScreen extends StatefulWidget {
@@ -226,141 +227,144 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
               iconTheme: IconThemeData(color: textColor),
               elevation: 0.5,
             ),
-            body: Column(
-              children: [
-                // Info Bar SKS
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  color: isDark ? Colors.blue.shade900.withValues(alpha: 0.4) : Colors.blue.shade50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Semester 5 (IFB5A)', style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                      Text(
-                        'Terpilih: $_totalSksTerpilih / 26 SKS',
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
-                      ),
-                    ],
+            body: KontenLayar(
+              paddingHp: EdgeInsets.zero,
+              paddingLebar: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  // Info Bar SKS
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    color: isDark ? Colors.blue.shade900.withValues(alpha: 0.4) : Colors.blue.shade50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Semester 5 (IFB5A)', style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+                        Text(
+                          'Terpilih: $_totalSksTerpilih / 26 SKS',
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                // List Mata Kuliah
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _daftarMatkul.length,
-                    itemBuilder: (context, index) {
-                      final item = _daftarMatkul[index];
-                      final bool isSelected = _selectedKode.contains(item['kode']);
-                      final bool isWajib = item['jenis'] == 'WAJIB';
-                      final bool isPenuh = item['terisi'] >= item['max'];
+                  // List Mata Kuliah
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _daftarMatkul.length,
+                      itemBuilder: (context, index) {
+                        final item = _daftarMatkul[index];
+                        final bool isSelected = _selectedKode.contains(item['kode']);
+                        final bool isWajib = item['jenis'] == 'WAJIB';
+                        final bool isPenuh = item['terisi'] >= item['max'];
 
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: Material(
-                          color: cardColor,
-                          borderRadius: BorderRadius.circular(12),
-                          clipBehavior: Clip.antiAlias,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Colors.blue
-                                    : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
-                                width: isSelected ? 1.5 : 1.0,
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: Material(
+                            color: cardColor,
+                            borderRadius: BorderRadius.circular(12),
+                            clipBehavior: Clip.antiAlias,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.blue
+                                      : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+                                  width: isSelected ? 1.5 : 1.0,
+                                ),
                               ),
-                            ),
-                            child: CheckboxListTile(
-                              value: isSelected,
-                              activeColor: Colors.blue,
-                              onChanged: (isWajib || isPenuh)
-                                  ? null
-                                  : (bool? checked) {
-                                      setState(() {
-                                        if (checked == true) {
-                                          _selectedKode.add(item['kode']);
-                                        } else {
-                                          _selectedKode.remove(item['kode']);
-                                        }
-                                      });
-                                    },
-                              title: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: isWajib ? Colors.red.shade100 : Colors.blue.shade100,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      item['jenis'],
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: isWajib ? Colors.red.shade800 : Colors.blue.shade800,
+                              child: CheckboxListTile(
+                                value: isSelected,
+                                activeColor: Colors.blue,
+                                onChanged: (isWajib || isPenuh)
+                                    ? null
+                                    : (bool? checked) {
+                                        setState(() {
+                                          if (checked == true) {
+                                            _selectedKode.add(item['kode']);
+                                          } else {
+                                            _selectedKode.remove(item['kode']);
+                                          }
+                                        });
+                                      },
+                                title: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: isWajib ? Colors.red.shade100 : Colors.blue.shade100,
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(item['kode'], style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                                ],
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    item['nama'],
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text('SKS: ${item['sks']} | Prasyarat: ${item['prasyarat']}', style: const TextStyle(fontSize: 12)),
-                                  Text('Dosen: ${item['dosen']}', style: const TextStyle(fontSize: 12)),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('${item['hari']}, ${item['jam']}', style: TextStyle(fontSize: 11, color: isDark ? Colors.grey.shade400 : Colors.grey.shade700, fontWeight: FontWeight.w600)),
-                                      Text(
-                                        'Kuota: ${item['terisi']}/${item['max']} ${isPenuh ? '(PENUH)' : ''}',
+                                      child: Text(
+                                        item['jenis'],
                                         style: TextStyle(
-                                          fontSize: 11,
+                                          fontSize: 10,
                                           fontWeight: FontWeight.bold,
-                                          color: isPenuh ? Colors.red : Colors.green,
+                                          color: isWajib ? Colors.red.shade800 : Colors.blue.shade800,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(item['kode'], style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                  ],
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      item['nama'],
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text('SKS: ${item['sks']} | Prasyarat: ${item['prasyarat']}', style: const TextStyle(fontSize: 12)),
+                                    Text('Dosen: ${item['dosen']}', style: const TextStyle(fontSize: 12)),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('${item['hari']}, ${item['jam']}', style: TextStyle(fontSize: 11, color: isDark ? Colors.grey.shade400 : Colors.grey.shade700, fontWeight: FontWeight.w600)),
+                                        Text(
+                                          'Kuota: ${item['terisi']}/${item['max']} ${isPenuh ? '(PENUH)' : ''}',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: isPenuh ? Colors.red : Colors.green,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                // Tombol Ajukan
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  color: cardColor,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: _ajukanKrs,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: const Text('Ajukan KRS Sekarang', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                        );
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
+
+                  // Tombol Ajukan
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    color: cardColor,
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _ajukanKrs,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text('Ajukan KRS Sekarang', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                      ),
+                    ),
+                  ),
+                ],
+              )),
           ),
         );
       },

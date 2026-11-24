@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kampus/akademik/tambah_judul_skripsi_screen.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
 import 'package:app_kampus/data/skripsi_store.dart';
@@ -55,34 +56,37 @@ class SkripsiScreen extends StatelessWidget {
             iconTheme: IconThemeData(color: p.textPrimary),
             elevation: 0.5,
           ),
-          body: ValueListenableBuilder<List<PengajuanSkripsi>>(
-            valueListenable: SkripsiStore.pengajuan,
-            builder: (context, daftar, _) => ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-              children: [
-                _buildHero(p, daftar),
-                const SizedBox(height: 20),
-                _buildJudulBagian(p, 'ALUR PENYUSUNAN SKRIPSI'),
-                const SizedBox(height: 10),
-                _buildAlur(p),
-                const SizedBox(height: 20),
-                _buildJudulBagian(p, 'PEMBIMBING'),
-                const SizedBox(height: 10),
-                _buildPembimbing(p),
-                const SizedBox(height: 20),
-                _buildJudulBagian(
-                  p,
-                  'PENGAJUAN JUDUL',
-                  lencana: '${daftar.length}',
-                ),
-                const SizedBox(height: 10),
-                if (daftar.isEmpty)
-                  _buildKosong(p)
-                else
-                  ...daftar.map((item) => _buildKartuPengajuan(context, p, item)),
-              ],
-            ),
-          ),
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: EdgeInsets.zero,
+            child: ValueListenableBuilder<List<PengajuanSkripsi>>(
+              valueListenable: SkripsiStore.pengajuan,
+              builder: (context, daftar, _) => ListView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                children: [
+                  _buildHero(p, daftar),
+                  const SizedBox(height: 20),
+                  _buildJudulBagian(p, 'ALUR PENYUSUNAN SKRIPSI'),
+                  const SizedBox(height: 10),
+                  _buildAlur(p),
+                  const SizedBox(height: 20),
+                  _buildJudulBagian(p, 'PEMBIMBING'),
+                  const SizedBox(height: 10),
+                  _buildPembimbing(p),
+                  const SizedBox(height: 20),
+                  _buildJudulBagian(
+                    p,
+                    'PENGAJUAN JUDUL',
+                    lencana: '${daftar.length}',
+                  ),
+                  const SizedBox(height: 10),
+                  if (daftar.isEmpty)
+                    _buildKosong(p)
+                  else
+                    ...daftar.map((item) => _buildKartuPengajuan(context, p, item)),
+                ],
+              ),
+            )),
           bottomNavigationBar: _buildTombolTambah(context, p),
         ),
       ),

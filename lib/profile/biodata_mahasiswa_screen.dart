@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 
 class BiodataMahasiswaScreen extends StatefulWidget {
@@ -97,59 +98,62 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
               const SizedBox(width: 8),
             ],
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_isEditing)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline, color: p.accentText),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text('Mode edit aktif. Ubah data lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
-                      ],
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: EdgeInsets.zero,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isEditing)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, color: p.accentText),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text('Mode edit aktif. Ubah data lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
+                        ],
+                      ),
                     ),
-                  ),
 
-                // KELOMPOK 1: INFORMASI AKADEMIK
-                _buildSectionTitle('INFORMASI AKADEMIK', p),
-                _buildCardGroup(p, [
-                  _buildTextField(p, 'NIM', _nimCtrl, Icons.badge_outlined, isReadOnly: true), // NIM biasanya gak bisa diedit
-                  _buildTextField(p, 'Program Studi', _prodiCtrl, Icons.school_outlined, isReadOnly: true),
-                  _buildTextField(p, 'Status Registrasi', _statusCtrl, Icons.verified_user_outlined, isReadOnly: true),
-                  _buildTextField(p, 'Dosen Pembimbing Akademik', _dosenCtrl, Icons.supervisor_account_outlined, isReadOnly: true),
-                ]),
-                const SizedBox(height: 20),
+                  // KELOMPOK 1: INFORMASI AKADEMIK
+                  _buildSectionTitle('INFORMASI AKADEMIK', p),
+                  _buildCardGroup(p, [
+                    _buildTextField(p, 'NIM', _nimCtrl, Icons.badge_outlined, isReadOnly: true), // NIM biasanya gak bisa diedit
+                    _buildTextField(p, 'Program Studi', _prodiCtrl, Icons.school_outlined, isReadOnly: true),
+                    _buildTextField(p, 'Status Registrasi', _statusCtrl, Icons.verified_user_outlined, isReadOnly: true),
+                    _buildTextField(p, 'Dosen Pembimbing Akademik', _dosenCtrl, Icons.supervisor_account_outlined, isReadOnly: true),
+                  ]),
+                  const SizedBox(height: 20),
 
-                // KELOMPOK 2: DATA PRIBADI
-                _buildSectionTitle('DATA PRIBADI', p),
-                _buildCardGroup(p, [
-                  _buildTextField(p, 'Nama Lengkap', _namaCtrl, Icons.person_outline),
-                  _buildTextField(p, 'Tempat Lahir', _tempatLahirCtrl, Icons.location_city),
-                  _buildTextField(p, 'Tanggal Lahir', _tglLahirCtrl, Icons.calendar_today),
-                  _buildTextField(p, 'Jenis Kelamin', _jkCtrl, Icons.wc),
-                  _buildTextField(p, 'Agama', _agamaCtrl, Icons.favorite_border),
-                ]),
-                const SizedBox(height: 20),
+                  // KELOMPOK 2: DATA PRIBADI
+                  _buildSectionTitle('DATA PRIBADI', p),
+                  _buildCardGroup(p, [
+                    _buildTextField(p, 'Nama Lengkap', _namaCtrl, Icons.person_outline),
+                    _buildTextField(p, 'Tempat Lahir', _tempatLahirCtrl, Icons.location_city),
+                    _buildTextField(p, 'Tanggal Lahir', _tglLahirCtrl, Icons.calendar_today),
+                    _buildTextField(p, 'Jenis Kelamin', _jkCtrl, Icons.wc),
+                    _buildTextField(p, 'Agama', _agamaCtrl, Icons.favorite_border),
+                  ]),
+                  const SizedBox(height: 20),
 
-                // KELOMPOK 3: KONTAK & ALAMAT
-                _buildSectionTitle('KONTAK & ALAMAT', p),
-                _buildCardGroup(p, [
-                  _buildTextField(p, 'Email (Official)', _emailOffCtrl, Icons.email_outlined, isReadOnly: true),
-                  _buildTextField(p, 'Email (Personal)', _emailPersCtrl, Icons.alternate_email),
-                  _buildTextField(p, 'Nomor Telepon', _telpCtrl, Icons.phone_outlined, keyboardType: TextInputType.phone),
-                  _buildTextField(p, 'Alamat Asal', _alamatAsalCtrl, Icons.home_outlined, maxLines: 2),
-                  _buildTextField(p, 'Alamat Sekarang', _alamatSkrgCtrl, Icons.location_on_outlined, maxLines: 2),
-                ]),
-                const SizedBox(height: 30),
-              ],
-            ),
-          ),
+                  // KELOMPOK 3: KONTAK & ALAMAT
+                  _buildSectionTitle('KONTAK & ALAMAT', p),
+                  _buildCardGroup(p, [
+                    _buildTextField(p, 'Email (Official)', _emailOffCtrl, Icons.email_outlined, isReadOnly: true),
+                    _buildTextField(p, 'Email (Personal)', _emailPersCtrl, Icons.alternate_email),
+                    _buildTextField(p, 'Nomor Telepon', _telpCtrl, Icons.phone_outlined, keyboardType: TextInputType.phone),
+                    _buildTextField(p, 'Alamat Asal', _alamatAsalCtrl, Icons.home_outlined, maxLines: 2),
+                    _buildTextField(p, 'Alamat Sekarang', _alamatSkrgCtrl, Icons.location_on_outlined, maxLines: 2),
+                  ]),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            )),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/auth/login_screen.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/diagnostik_screen.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
@@ -36,113 +37,120 @@ class AkunScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 16.0,
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Akun Saya',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: p.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    _buildProfilHeader(context, p),
-                    const SizedBox(height: 24),
-                    _buildMenuGroup(
-                      p,
-                      title: 'INFORMASI PRIBADI',
-                      children: [
-                        _buildMenuItem(
-                          context,
-                          p,
-                          Icons.person_outline,
-                          'Biodata Mahasiswa',
-                          const BiodataMahasiswaScreen(),
-                        ),
-                        _buildMenuItem(
-                          context,
-                          p,
-                          Icons.family_restroom,
-                          'Biodata Keluarga',
-                          const BiodataKeluargaScreen(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildMenuGroup(
-                      p,
-                      title: 'KEAMANAN & KOMUNIKASI',
-                      children: [
-                        _buildMenuItem(
-                          context,
-                          p,
-                          Icons.lock_outline,
-                          'Ganti Password',
-                          const GantiPasswordScreen(),
-                        ),
-                        _buildMenuItem(
-                          context,
-                          p,
-                          Icons.wifi_password,
-                          'Ganti Password Wifi',
-                          const GantiPasswordWifiScreen(),
-                        ),
-                        _buildMenuItem(
-                          context,
-                          p,
-                          Icons.chat_bubble_outline,
-                          'Pesan Baru',
-                          const PesanBaruScreen(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildMenuGroup(
-                      p,
-                      title: 'SISTEM',
-                      children: [
-                        _buildMenuItem(
-                          context,
-                          p,
-                          Icons.health_and_safety_outlined,
-                          'Diagnostik Supabase',
-                          const DiagnostikScreen(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton.icon(
-                        onPressed: () => _keluar(context),
-                        icon: const Icon(Icons.logout, color: Colors.red),
-                        label: const Text(
-                          'Keluar Aplikasi',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.withValues(
-                            alpha: p.isDark ? 0.22 : 0.08,
-                          ),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+                child: KontenLayar(
+                  maxWidth: 640,
+                  paddingHp: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 16.0,
+                  ),
+                  paddingLebar: const EdgeInsets.symmetric(
+                    horizontal: 28.0,
+                    vertical: 24.0,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Akun Saya',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: p.textPrimary,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 24),
+                      _buildProfilHeader(context, p),
+                      const SizedBox(height: 24),
+                      _buildMenuGroup(
+                        p,
+                        title: 'INFORMASI PRIBADI',
+                        children: [
+                          _buildMenuItem(
+                            context,
+                            p,
+                            Icons.person_outline,
+                            'Biodata Mahasiswa',
+                            const BiodataMahasiswaScreen(),
+                          ),
+                          _buildMenuItem(
+                            context,
+                            p,
+                            Icons.family_restroom,
+                            'Biodata Keluarga',
+                            const BiodataKeluargaScreen(),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _buildMenuGroup(
+                        p,
+                        title: 'KEAMANAN & KOMUNIKASI',
+                        children: [
+                          _buildMenuItem(
+                            context,
+                            p,
+                            Icons.lock_outline,
+                            'Ganti Password',
+                            const GantiPasswordScreen(),
+                          ),
+                          _buildMenuItem(
+                            context,
+                            p,
+                            Icons.wifi_password,
+                            'Ganti Password Wifi',
+                            const GantiPasswordWifiScreen(),
+                          ),
+                          _buildMenuItem(
+                            context,
+                            p,
+                            Icons.chat_bubble_outline,
+                            'Pesan Baru',
+                            const PesanBaruScreen(),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _buildMenuGroup(
+                        p,
+                        title: 'SISTEM',
+                        children: [
+                          _buildMenuItem(
+                            context,
+                            p,
+                            Icons.health_and_safety_outlined,
+                            'Diagnostik Supabase',
+                            const DiagnostikScreen(),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton.icon(
+                          onPressed: () => _keluar(context),
+                          icon: const Icon(Icons.logout, color: Colors.red),
+                          label: const Text(
+                            'Keluar Aplikasi',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red.withValues(
+                              alpha: p.isDark ? 0.22 : 0.08,
+                            ),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),

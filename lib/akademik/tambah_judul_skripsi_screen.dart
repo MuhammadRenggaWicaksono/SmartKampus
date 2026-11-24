@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/skripsi_store.dart';
 
@@ -119,28 +120,31 @@ class _TambahJudulSkripsiScreenState extends State<TambahJudulSkripsiScreen> {
             iconTheme: IconThemeData(color: p.textPrimary),
             elevation: 0.5,
           ),
-          body: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-              children: [
-                Text(
-                  'TAMBAH JUDUL SKRIPSI',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.6,
-                    color: p.textPrimary,
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: EdgeInsets.zero,
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                children: [
+                  Text(
+                    'TAMBAH JUDUL SKRIPSI',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.6,
+                      color: p.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 14),
-                _buildPesan(p),
-                const SizedBox(height: 20),
-                _buildBagianForm(p),
-              ],
-            ),
-          ),
+                  const SizedBox(height: 14),
+                  _buildPesan(p),
+                  const SizedBox(height: 20),
+                  _buildBagianForm(p),
+                ],
+              ),
+            )),
           bottomNavigationBar: _buildFooter(p),
         ),
       ),

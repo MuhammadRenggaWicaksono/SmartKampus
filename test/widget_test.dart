@@ -30,48 +30,26 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('menampilkan 3 tombol dan grafik IPS secara default', (
-      tester,
-    ) async {
-      _pasangLayar(tester);
-      await pumpChart(tester);
+  testWidgets('menampilkan grafik absensi tanpa kontrol pergantian mode', (
+    tester,
+  ) async {
+    _pasangLayar(tester);
+    await pumpChart(tester);
 
-      expect(find.text('Statistik Akademik'), findsOneWidget);
-      expect(find.text('IPS 1-8'), findsOneWidget);
-      expect(find.text('Tatap Muka'), findsOneWidget);
-      expect(find.text('Absensi'), findsOneWidget);
-      // legenda mode IPS
-      expect(find.textContaining('Tertinggi 3.76'), findsOneWidget);
-      expect(find.textContaining('Terendah 3.58'), findsOneWidget);
-    });
+    expect(find.text('Statistik Akademik'), findsOneWidget);
+    expect(
+      find.textContaining('Kehadiran ${AppData.persenKehadiran}%'),
+      findsOneWidget,
+    );
+    expect(find.text('Hadir ${AppData.totalHadir}'), findsOneWidget);
+    expect(find.text('Sakit ${AppData.totalSakit}'), findsOneWidget);
+    expect(find.text('Izin ${AppData.totalIzin}'), findsOneWidget);
+    expect(find.text('Alpa ${AppData.totalAlpa}'), findsOneWidget);
+    expect(find.text('IPS 1-8'), findsNothing);
+    expect(find.text('Tatap Muka'), findsNothing);
+    expect(find.byType(StatistikChart), findsOneWidget);
+  });
 
-    testWidgets('tombol Tatap Muka mengganti isi grafik', (tester) async {
-      _pasangLayar(tester);
-      await pumpChart(tester);
-
-      await tester.tap(find.text('Tatap Muka'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.textContaining('dari rencana 16x per mata kuliah'),
-        findsOneWidget,
-      );
-      expect(find.textContaining('75/128 terlaksana'), findsOneWidget);
-      expect(find.textContaining('Tertinggi 3.76'), findsNothing);
-    });
-
-    testWidgets('tombol Absensi mengganti isi grafik', (tester) async {
-      _pasangLayar(tester);
-      await pumpChart(tester);
-
-      await tester.tap(find.text('Absensi'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Hadir ${AppData.totalHadir}'), findsOneWidget);
-      expect(find.text('Sakit ${AppData.totalSakit}'), findsOneWidget);
-      expect(find.text('Izin ${AppData.totalIzin}'), findsOneWidget);
-      expect(find.text('Alpa ${AppData.totalAlpa}'), findsOneWidget);
-    });
 
     testWidgets('digambar tanpa error di ketiga tema', (tester) async {
       _pasangLayar(tester);

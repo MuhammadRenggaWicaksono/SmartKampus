@@ -28,6 +28,21 @@ const double _ukuranIkonNav = 25;
 /// terlihat "tidak rata".
 const double _tinggiKotakIkon = 34;
 
+/// Lebar ambang untuk berpindah dari navbar bawah ke rail samping.
+///
+/// Di Web/laptop bilah bawah selebar 1366dp menyebar lima tab sejauh ±270dp
+/// satu sama lain: ikon dan labelnya jadi terpisah jauh dan bilahnya terbaca
+/// sebagai deretan tombol lepas, bukan navigasi. Ambang ini sama dengan
+/// ambang desktop dashboard (980dp) supaya seluruh aplikasi berpindah bentuk
+/// pada lebar yang sama.
+const double _minLebarDesktop = 980;
+
+/// Lebar rail samping saat diperluas (ikon + label sebaris).
+///
+/// 208dp memberi ruang untuk "Perkuliahan" 12.5pt (≈66dp) plus padding kiri
+/// indikator; lebih sempit dari ini labelnya mulai terpotong.
+const double _lebarRail = 208;
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -53,23 +68,45 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  /// Satu tab navbar.
+  /// Satu tab navigasi: ikon outlined, ikon terisi, dan labelnya.
+  ///
+  /// Satu daftar dipakai dua bentuk navigasi (rail samping di desktop, bilah
+  /// bawah di HP) supaya urutan tab dan labelnya tidak pernah beda.
+  static const List<({IconData ikon, IconData ikonAktif, String label})> _tabs = [
+    (ikon: Icons.home_outlined, ikonAktif: Icons.home, label: 'Dashboard'),
+    (
+      ikon: Icons.calendar_today_outlined,
+      ikonAktif: Icons.calendar_today,
+      label: 'Akademik',
+    ),
+    (
+      ikon: Icons.menu_book_outlined,
+      ikonAktif: Icons.menu_book,
+      label: 'Perkuliahan',
+    ),
+    (
+      ikon: Icons.account_balance_wallet_outlined,
+      ikonAktif: Icons.account_balance_wallet,
+      label: 'Keuangan',
+    ),
+    (ikon: Icons.person_outline, ikonAktif: Icons.person, label: 'Akun'),
+  ];
+
+  /// Satu tab navbar bawah.
   ///
   /// Ikon dibungkus kotak berukuran tetap, dan tab aktif mendapat pil
   /// berwarna di belakang ikonnya. Sebelumnya navbar hanya membedakan tab
   /// aktif lewat warna ikon — kontrasnya terlalu tipis, jadi saat aplikasi
   /// baru dibuka tidak kelihatan tab mana yang sedang dipakai.
-  BottomNavigationBarItem _itemNav({
-    required IconData ikon,
-    required IconData ikonAktif,
-    required String label,
-    required AppPalette p,
-  }) {
+  BottomNavigationBarItem _itemNav(
+    ({IconData ikon, IconData ikonAktif, String label}) tab,
+    AppPalette p,
+  ) {
     return BottomNavigationBarItem(
       // Varian outlined untuk tab tidak aktif, filled untuk yang aktif.
-      icon: _kotakIkon(Icon(ikon)),
-      activeIcon: _kotakIkon(Icon(ikonAktif), warnaPil: p.navPill),
-      label: label,
+      icon: _kotakIkon(Icon(tab.ikon)),
+      activeIcon: _kotakIkon(Icon(tab.ikonAktif), warnaPil: p.navPill),
+      label: tab.label,
     );
   }
 
@@ -86,93 +123,168 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  /// Bilah navigasi bawah — bentuk untuk HP.
+  ///
+  /// Dulu bilah ini memakai warna yang sama persis dengan kartu di halaman,
+  /// jadi menyatu dengan konten dan tidak terbaca sebagai navigasi. Sekarang
+  /// ada garis pemisah + bayangan ke atas supaya bilahnya "mengambang" di
+  /// atas isi layar.
+  Widget _buildBilahBawah(AppPalette p) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: p.navSurface,
+        border: Border(top: BorderSide(color: p.navBorder)),
+        boxShadow: [
+          BoxShadow(
+            color: p.navShadow,
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        iconSize: _ukuranIkonNav,
+        showUnselectedLabels: true,
+        selectedItemColor: p.navSelected,
+        unselectedItemColor: p.navUnselected,
+        // Font tab aktif dan tidak aktif harus sama. Kalau beda,
+        // labelnya membesar saat diketuk dan seluruh baris bergeser
+        // — itu yang bikin navbar terlihat "tidak rata".
+        selectedFontSize: _ukuranLabelNav,
+        unselectedFontSize: _ukuranLabelNav,
+        selectedLabelStyle: const TextStyle(
+          fontSize: _ukuranLabelNav,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.15,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: _ukuranLabelNav,
+          fontWeight: FontWeight.w500,
+          letterSpacing: -0.15,
+        ),
+        items: [for (final tab in _tabs) _itemNav(tab, p)],
+      ),
+    );
+  }
+
+  /// Rail navigasi samping — bentuk untuk Web/laptop.
+  ///
+  /// Bilah bawah selebar 1366dp menyebar lima tabnya sejauh ±270dp; ikon dan
+  /// label tiap tab jadi tidak lagi terbaca sebagai satu unit. Rail vertikal
+  /// memakai lebar tetap 208dp dan menumpuk tabnya, sehingga sisanya (≥1150dp)
+  /// seluruhnya jadi ruang konten.
+  Widget _buildRail(AppPalette p) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: p.navSurface,
+        border: Border(right: BorderSide(color: p.navBorder)),
+      ),
+      child: NavigationRail(
+        extended: true,
+        minExtendedWidth: _lebarRail,
+        backgroundColor: Colors.transparent,
+        // Jangan set `elevation: 0`. NavigationRail meng-assert
+        // `elevation == null || elevation > 0`, jadi nilai 0 langsung
+        // melempar assertion di mode debug (layar merah di Web).
+        // null = tanpa bayangan, persis yang diinginkan di sini.
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        indicatorColor: p.navPill,
+        // Font terpilih dan tidak terpilih sama besar — alasannya sama
+        // dengan bilah bawah: label tidak boleh bergeser saat tab diketuk.
+        selectedIconTheme: IconThemeData(
+          color: p.navSelected,
+          size: _ukuranIkonNav,
+        ),
+        unselectedIconTheme: IconThemeData(
+          color: p.navUnselected,
+          size: _ukuranIkonNav,
+        ),
+        selectedLabelTextStyle: TextStyle(
+          fontSize: _ukuranLabelNav,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.15,
+          color: p.navSelected,
+        ),
+        unselectedLabelTextStyle: TextStyle(
+          fontSize: _ukuranLabelNav,
+          fontWeight: FontWeight.w500,
+          letterSpacing: -0.15,
+          color: p.navUnselected,
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
+          // Lebar dikunci: NavigationRail memberi `leading` lebar tak terbatas,
+          // dan Row berisi Expanded di dalamnya meledak dengan pesan
+          // "non-zero flex but incoming width constraints are unbounded".
+          child: SizedBox(
+            width: _lebarRail - 24,
+            child: Row(
+              children: [
+                Icon(Icons.school, color: p.navSelected, size: 26),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Kampus Pintar',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: p.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        destinations: [
+          for (final tab in _tabs)
+            NavigationRailDestination(
+              icon: Icon(tab.ikon),
+              selectedIcon: Icon(tab.ikonAktif),
+              label: Text(tab.label),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ThemeBuilder(
       builder: (context, p) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: p.overlay,
-          child: Scaffold(
-            // IndexedStack: semua tab tetap hidup, jadi posisi scroll dan isi
-            // form tidak hilang saat berpindah tab. Sebelumnya
-            // `body: _pages[_selectedIndex]` membangun ulang halaman dari nol
-            // setiap kali tab diganti.
-            body: IndexedStack(index: _selectedIndex, children: _pages),
-            // Bilah navbar dulu memakai warna yang sama persis dengan kartu
-            // di halaman, jadi menyatu dengan konten dan tidak terbaca
-            // sebagai navigasi. Sekarang ada garis pemisah + bayangan ke
-            // atas supaya bilahnya "mengambang" di atas isi layar.
-            bottomNavigationBar: DecoratedBox(
-              decoration: BoxDecoration(
-                color: p.navSurface,
-                border: Border(top: BorderSide(color: p.navBorder)),
-                boxShadow: [
-                  BoxShadow(
-                    color: p.navShadow,
-                    blurRadius: 16,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-              ),
-              child: BottomNavigationBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                currentIndex: _selectedIndex,
-                onTap: _onItemTapped,
-                type: BottomNavigationBarType.fixed,
-                iconSize: _ukuranIkonNav,
-                showUnselectedLabels: true,
-                selectedItemColor: p.navSelected,
-                unselectedItemColor: p.navUnselected,
-                // Font tab aktif dan tidak aktif harus sama. Kalau beda,
-                // labelnya membesar saat diketuk dan seluruh baris bergeser
-                // — itu yang bikin navbar terlihat "tidak rata".
-                selectedFontSize: _ukuranLabelNav,
-                unselectedFontSize: _ukuranLabelNav,
-                selectedLabelStyle: const TextStyle(
-                  fontSize: _ukuranLabelNav,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.15,
-                ),
-                unselectedLabelStyle: const TextStyle(
-                  fontSize: _ukuranLabelNav,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: -0.15,
-                ),
-                items: [
-                  _itemNav(
-                    ikon: Icons.home_outlined,
-                    ikonAktif: Icons.home,
-                    label: 'Dashboard',
-                    p: p,
-                  ),
-                  _itemNav(
-                    ikon: Icons.calendar_today_outlined,
-                    ikonAktif: Icons.calendar_today,
-                    label: 'Akademik',
-                    p: p,
-                  ),
-                  _itemNav(
-                    ikon: Icons.menu_book_outlined,
-                    ikonAktif: Icons.menu_book,
-                    label: 'Perkuliahan',
-                    p: p,
-                  ),
-                  _itemNav(
-                    ikon: Icons.account_balance_wallet_outlined,
-                    ikonAktif: Icons.account_balance_wallet,
-                    label: 'Keuangan',
-                    p: p,
-                  ),
-                  _itemNav(
-                    ikon: Icons.person_outline,
-                    ikonAktif: Icons.person,
-                    label: 'Akun',
-                    p: p,
-                  ),
-                ],
-              ),
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final desktop = constraints.maxWidth >= _minLebarDesktop;
+
+              // IndexedStack: semua tab tetap hidup, jadi posisi scroll dan isi
+              // form tidak hilang saat berpindah tab. Sebelumnya
+              // `body: _pages[_selectedIndex]` membangun ulang halaman dari nol
+              // setiap kali tab diganti.
+              final isi = IndexedStack(index: _selectedIndex, children: _pages);
+
+              return Scaffold(
+                body: desktop
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildRail(p),
+                          Expanded(child: isi),
+                        ],
+                      )
+                    : isi,
+                bottomNavigationBar: desktop ? null : _buildBilahBawah(p),
+              );
+            },
           ),
         );
       },

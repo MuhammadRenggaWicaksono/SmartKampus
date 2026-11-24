@@ -17,10 +17,30 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
+/// Bagian yang hanya berguna di layar lebar (>=980dp).
+///
+/// Tata letak dashboard bersifat responsif: layar lebar memakai kolom ganda
+/// dan bento tiga sel, sedangkan layar sempit turun ke satu kolom. Nilai
+/// ambang 980 dipilih dari wireframe, 320 untuk susunan bento kecil.
+class _ConstraintData {
+  const _ConstraintData({required this.desktop, required this.bentoSempit});
+
+  final bool desktop;
+  final bool bentoSempit;
+
+  /// Ambang yang dipakai tata letak dashboard.
+  static const double minDesktop = 980;
+  static const double minBentoSempit = 320;
+}
+
 class _DashboardScreenState extends State<DashboardScreen> {
   /// Dipakai supaya label "BERJALAN" / "30 MENIT LAGI" pada jadwal tidak basi.
   Timer? _tick;
   DateTime _sekarang = DateTime.now();
+
+  /// Ambang tata letak responsif dashboard.
+  static const double _minDesktop = _ConstraintData.minDesktop;
+  static const double _minBentoSempit = _ConstraintData.minBentoSempit;
 
   @override
   void initState() {
@@ -46,22 +66,58 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(context, p),
-                    const SizedBox(height: 24),
-                    _buildJadwalHariIni(p),
-                    const SizedBox(height: 24),
-                    _buildInfoAkademik(p),
-                    const SizedBox(height: 24),
-                    const PengumumanSection(),
-                    const SizedBox(height: 24),
-                    const StatistikChart(),
-                  ],
-                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final lebar = constraints.maxWidth;
+                  final desktop = lebar >= _minDesktop;
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.all(desktop ? 28 : 20),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1440),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildHeader(context, p),
+                            const SizedBox(height: 24),
+                            _buildInfoAkademik(p),
+                            const SizedBox(height: 24),
+                            if (desktop)
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 6,
+                                    child: Column(
+                                      children: [
+                                        _buildJadwalHariIni(p),
+                                        const SizedBox(height: 16),
+                                        _buildPresensiSemester(p),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 24),
+                                  const Expanded(
+                                    flex: 4,
+                                    child: PengumumanSection(),
+                                  ),
+                                ],
+                              )
+                            else ...[
+                              _buildJadwalHariIni(p),
+                              const SizedBox(height: 16),
+                              _buildPresensiSemester(p),
+                              const SizedBox(height: 24),
+                              const PengumumanSection(),
+                            ],
+                            const SizedBox(height: 24),
+                            const StatistikChart(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -355,6 +411,114 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return (label: 'SELESAI', isi: p.textMuted);
   }
 
+  Widget _buildPresensiSemester(AppPalette p) {
+    final persen = AppData.persenKehadiran;
+    final warna = p.statusInk(persen >= 75 ? kHadir : kAlpa);
+    final total = AppData.totalPertemuanTerlaksana;
+    final hadir = AppData.totalHadir;
+    final absen = AppData.totalAbsen;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: p.cardDeco(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.fact_check_outlined, color: p.accentInk, size: 20),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Text(
+                  'Presensi Semester Ini',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: p.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              SizedBox(
+                width: 92,
+                height: 92,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox.expand(
+                      child: CircularProgressIndicator(
+                        value: persen / 100,
+                        strokeWidth: 9,
+                        strokeCap: StrokeCap.round,
+                        backgroundColor: p.surfaceAlt,
+                        valueColor: AlwaysStoppedAnimation<Color>(warna),
+                      ),
+                    ),
+                    Text(
+                      '$persen%',
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        color: p.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$hadir dari $total pertemuan',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: p.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      '$absen kali tidak hadir',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: p.textCardSupport,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: LinearProgressIndicator(
+                        value: total == 0 ? 0 : hadir / total,
+                        minHeight: 7,
+                        backgroundColor: p.surfaceAlt,
+                        valueColor: AlwaysStoppedAnimation<Color>(warna),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Batas minimum 75%',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                        color: p.textChartAxis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   // ------------------------------------------------------- kartu akademik
   /// IPK / SKS / TAGIHAN — versi "bento".
   ///
@@ -364,32 +528,72 @@ class _DashboardScreenState extends State<DashboardScreen> {
   /// kanan. Tinggi kedua kolom disamakan oleh [IntrinsicHeight] supaya kolom
   /// kanan tidak menggantung bila isinya lebih pendek.
   Widget _buildInfoAkademik(AppPalette p) {
-    return Container(
-      decoration: p.cardDeco(),
-      padding: const EdgeInsets.all(12),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(flex: 108, child: _buildHeroIpk(p)),
-            const SizedBox(width: 10),
-            // Sengaja tanpa Expanded di dalam: anak ber-flex menyumbang 0 pada
-            // pengukuran intrinsik, jadi tinggi sel tidak ikut terhitung dan
-            // isinya bisa meluber keluar kotak.
-            Expanded(
-              flex: 92,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildSelSks(p),
-                  const SizedBox(height: 10),
-                  _buildSelTagihan(p),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final desktop = constraints.maxWidth >= _minDesktop;
+        return Container(
+          decoration: p.cardDeco(),
+          padding: const EdgeInsets.all(12),
+          child: desktop
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 170,
+                      child: SizedBox(height: 164, child: _buildHeroIpk(p)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 100,
+                      child: SizedBox(height: 164, child: _buildSelSks(p)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 100,
+                      child: SizedBox(
+                        height: 164,
+                        child: _buildSelTagihan(p),
+                      ),
+                    ),
+                  ],
+                )
+              : LayoutBuilder(
+                  builder: (context, selConstraints) {
+                    final stackSel = selConstraints.maxWidth >= _minBentoSempit;
+                    return stackSel
+                        ? IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(flex: 108, child: _buildHeroIpk(p)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  flex: 92,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _buildSelSks(p),
+                                      const SizedBox(height: 10),
+                                      _buildSelTagihan(p),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              _buildHeroIpk(p, regang: false),
+                              const SizedBox(height: 10),
+                              _buildSelSks(p),
+                              const SizedBox(height: 10),
+                              _buildSelTagihan(p),
+                            ],
+                          );
+                  },
+                ),
+        );
+      },
     );
   }
 
@@ -410,7 +614,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   );
 
   /// Sel kiri: IPK sebagai kepala.
-  Widget _buildHeroIpk(AppPalette p) {
+  /// [regang] = true hanya kalau sel ini punya tinggi terbatas (dibungkus
+  /// IntrinsicHeight atau SizedBox). Di susunan bertumpuk ke bawah tingginya
+  /// mengikuti isi (tak terbatas), dan Spacer di situ melempar:
+  /// "RenderFlex children have non-zero flex but incoming height constraints
+  /// are unbounded".
+  Widget _buildHeroIpk(AppPalette p, {bool regang = true}) {
     final dinilai = AppData.riwayatIps.where((s) => s.sudahAdaNilai).toList();
     final selisih = AppData.selisihTargetIps;
     final diAtas = selisih >= 0;
@@ -448,7 +657,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: p.textCardSupport,
             ),
           ),
-          const Spacer(),
+          if (regang) const Spacer() else const SizedBox(height: 10),
           SizedBox(
             height: 34,
             width: double.infinity,

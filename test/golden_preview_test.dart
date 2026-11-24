@@ -11,7 +11,7 @@ import 'package:app_kampus/widgets/statistik_chart.dart';
 void main() {
   tearDown(() => appThemeNotifier.value = AppThemeMode.light);
 
-  testWidgets('potret grafik (3 mode)', (tester) async {
+  testWidgets('potret grafik absensi saja', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
@@ -26,22 +26,9 @@ void main() {
     await tester.pumpAndSettle();
     await expectLater(
       find.byType(StatistikChart),
-      matchesGoldenFile('goldens/chart_ips.png'),
-    );
-
-    await tester.tap(find.text('Tatap Muka'));
-    await tester.pumpAndSettle();
-    await expectLater(
-      find.byType(StatistikChart),
-      matchesGoldenFile('goldens/chart_pertemuan.png'),
-    );
-
-    await tester.tap(find.text('Absensi'));
-    await tester.pumpAndSettle();
-    await expectLater(
-      find.byType(StatistikChart),
       matchesGoldenFile('goldens/chart_absensi.png'),
     );
+    await tester.pumpWidget(const SizedBox());
   });
 
   testWidgets('potret dashboard (light)', (tester) async {

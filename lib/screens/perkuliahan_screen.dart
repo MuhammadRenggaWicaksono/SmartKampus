@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/perkuliahan/jadwal_kuliah_screen.dart';
 import 'package:app_kampus/perkuliahan/presensi_screen.dart';
@@ -25,58 +26,65 @@ class PerkuliahanScreen extends StatelessWidget {
             iconTheme: IconThemeData(color: p.textPrimary),
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Aktivitas Perkuliahan',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.textPrimary),
-                ),
-                const SizedBox(height: 16),
+            child: KontenLayar(
+              paddingHp: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Aktivitas Perkuliahan',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.textPrimary),
+                  ),
+                  const SizedBox(height: 16),
 
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    _buildMenuCard(
-                      context,
-                      title: 'Jadwal Kuliah',
-                      icon: Icons.calendar_month_outlined,
-                      color: Colors.blue,
-                      p: p,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const JadwalKuliahScreen())),
-                    ),
-                    _buildMenuCard(
-                      context,
-                      title: 'Presensi',
-                      icon: Icons.how_to_reg_outlined,
-                      color: Colors.teal,
-                      p: p,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PresensiScreen())),
-                    ),
-                    _buildMenuCard(
-                      context,
-                      title: 'Jadwal Ujian',
-                      icon: Icons.quiz_outlined,
-                      color: Colors.orange,
-                      p: p,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const JadwalUjianScreen())),
-                    ),
-                    _buildMenuCard(
-                      context,
-                      title: 'Kalender Akademik',
-                      icon: Icons.event_note_outlined,
-                      color: Colors.purple,
-                      p: p,
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KalenderAkademikScreen())),
-                    ),
-                  ],
-                ),
-              ],
+                  LayoutBuilder(
+                    builder: (context, c) {
+                      final desktop = c.maxWidth >= 600;
+                      return GridView.count(
+                        crossAxisCount: desktop ? 4 : 2,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        children: [
+                          _buildMenuCard(
+                            context,
+                            title: 'Jadwal Kuliah',
+                            icon: Icons.calendar_month_outlined,
+                            color: Colors.blue,
+                            p: p,
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const JadwalKuliahScreen())),
+                          ),
+                          _buildMenuCard(
+                            context,
+                            title: 'Presensi',
+                            icon: Icons.how_to_reg_outlined,
+                            color: Colors.teal,
+                            p: p,
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PresensiScreen())),
+                          ),
+                          _buildMenuCard(
+                            context,
+                            title: 'Jadwal Ujian',
+                            icon: Icons.quiz_outlined,
+                            color: Colors.orange,
+                            p: p,
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const JadwalUjianScreen())),
+                          ),
+                          _buildMenuCard(
+                            context,
+                            title: 'Kalender Akademik',
+                            icon: Icons.event_note_outlined,
+                            color: Colors.purple,
+                            p: p,
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KalenderAkademikScreen())),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

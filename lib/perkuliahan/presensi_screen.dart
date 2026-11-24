@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
 
@@ -29,23 +30,26 @@ class PresensiScreen extends StatelessWidget {
               iconTheme: IconThemeData(color: p.textPrimary),
               elevation: 0.5,
             ),
-            body: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _buildRingkasan(p),
-                const SizedBox(height: 20),
-                Text(
-                  'RINCIAN PER MATA KULIAH',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: p.textSecondary,
+            body: KontenLayar(
+              paddingHp: EdgeInsets.zero,
+              paddingLebar: EdgeInsets.zero,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  _buildRingkasan(p),
+                  const SizedBox(height: 20),
+                  Text(
+                    'RINCIAN PER MATA KULIAH',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: p.textSecondary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                ...AppData.mataKuliahAktif.map((mk) => _buildKartuMk(p, mk)),
-              ],
-            ),
+                  const SizedBox(height: 10),
+                  ...AppData.mataKuliahAktif.map((mk) => _buildKartuMk(p, mk)),
+                ],
+              )),
           ),
         );
       },

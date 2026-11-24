@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/theme_builder.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 
 class JadwalUjianScreen extends StatefulWidget {
   const JadwalUjianScreen({super.key});
@@ -31,42 +32,45 @@ class _JadwalUjianScreenState extends State<JadwalUjianScreen> {
             iconTheme: IconThemeData(color: p.textPrimary),
             elevation: 0.5,
           ),
-          body: Column(
-            children: [
-              // Kolom Pencarian (Search) sesuai di website
-              Container(
-                color: p.card,
-                padding: const EdgeInsets.all(16),
-                child: TextField(
-                  controller: _searchCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Search jadwal ujian...',
-                    prefixIcon: Icon(Icons.search, color: p.textSecondary),
-                    filled: true,
-                    fillColor: p.inputFill,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: EdgeInsets.zero,
+            child: Column(
+              children: [
+                // Kolom Pencarian (Search) sesuai di website
+                Container(
+                  color: p.card,
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    controller: _searchCtrl,
+                    decoration: InputDecoration(
+                      hintText: 'Search jadwal ujian...',
+                      prefixIcon: Icon(Icons.search, color: p.textSecondary),
+                      filled: true,
+                      fillColor: p.inputFill,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    ),
                   ),
                 ),
-              ),
 
-              // State Kosong (No data available in table)
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.event_busy, size: 80, color: p.textSecondary),
-                      const SizedBox(height: 16),
-                      Text('No data available', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.textPrimary)),
-                      const SizedBox(height: 8),
-                      Text('Belum ada jadwal ujian yang dirilis saat ini.', style: TextStyle(fontSize: 13, color: p.textSecondary)),
-                    ],
+                // State Kosong (No data available in table)
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.event_busy, size: 80, color: p.textSecondary),
+                        const SizedBox(height: 16),
+                        Text('No data available', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.textPrimary)),
+                        const SizedBox(height: 8),
+                        Text('Belum ada jadwal ujian yang dirilis saat ini.', style: TextStyle(fontSize: 13, color: p.textSecondary)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            )),
         ),
       ),
     );

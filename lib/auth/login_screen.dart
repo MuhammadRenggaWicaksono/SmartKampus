@@ -88,48 +88,52 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo kampus.
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.school,
+                          size: 80,
+                          color: Colors.blue,
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.school,
-                        size: 80,
-                        color: Colors.blue,
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Kampus Pintar',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Kampus Pintar',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                      const SizedBox(height: 8),
+                      Text(
+                        'Masuk untuk mengakses layanan akademik',
+                        style: TextStyle(color: p.textSecondary),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Masuk untuk mengakses layanan akademik',
-                      style: TextStyle(color: p.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 28),
-                    _buildKartuLogin(p),
-                    const SizedBox(height: 18),
-                    TextButton.icon(
-                      onPressed: _memuat ? null : _modeDemo,
-                      icon: const Icon(Icons.visibility_outlined, size: 18),
-                      label: const Text('Masuk Mode Demo (data dummy)'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: p.textSecondary,
+                      const SizedBox(height: 28),
+                      _buildKartuLogin(p),
+                      const SizedBox(height: 18),
+                      TextButton.icon(
+                        onPressed: _memuat ? null : _modeDemo,
+                        icon: const Icon(Icons.visibility_outlined, size: 18),
+                        label: const Text('Masuk Mode Demo (data dummy)'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: p.textSecondary,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
+import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 
 class BiodataKeluargaScreen extends StatefulWidget {
@@ -81,45 +82,48 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
               const SizedBox(width: 8),
             ],
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_isEditing)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline, color: p.accentText),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text('Ubah data orang tua lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
-                      ],
+          body: KontenLayar(
+            paddingHp: EdgeInsets.zero,
+            paddingLebar: EdgeInsets.zero,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isEditing)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, color: p.accentText),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text('Ubah data orang tua lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
+                        ],
+                      ),
                     ),
-                  ),
 
-                // KELOMPOK 1: DATA AYAH
-                _buildSectionTitle('DATA AYAH KANDUNG', p),
-                _buildCardGroup(p, [
-                  _buildTextField(p, 'Nama Ayah', _namaAyahCtrl, Icons.person_outline),
-                  _buildTextField(p, 'Pekerjaan Ayah', _pekerjaanAyahCtrl, Icons.work_outline),
-                  _buildTextField(p, 'Penghasilan Ayah', _penghasilanAyahCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
-                ]),
-                const SizedBox(height: 20),
+                  // KELOMPOK 1: DATA AYAH
+                  _buildSectionTitle('DATA AYAH KANDUNG', p),
+                  _buildCardGroup(p, [
+                    _buildTextField(p, 'Nama Ayah', _namaAyahCtrl, Icons.person_outline),
+                    _buildTextField(p, 'Pekerjaan Ayah', _pekerjaanAyahCtrl, Icons.work_outline),
+                    _buildTextField(p, 'Penghasilan Ayah', _penghasilanAyahCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
+                  ]),
+                  const SizedBox(height: 20),
 
-                // KELOMPOK 2: DATA IBU
-                _buildSectionTitle('DATA IBU KANDUNG', p),
-                _buildCardGroup(p, [
-                  _buildTextField(p, 'Nama Ibu', _namaIbuCtrl, Icons.person_outline),
-                  _buildTextField(p, 'Pekerjaan Ibu', _pekerjaanIbuCtrl, Icons.work_outline),
-                  _buildTextField(p, 'Penghasilan Ibu', _penghasilanIbuCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
-                ]),
-                const SizedBox(height: 30),
-              ],
-            ),
-          ),
+                  // KELOMPOK 2: DATA IBU
+                  _buildSectionTitle('DATA IBU KANDUNG', p),
+                  _buildCardGroup(p, [
+                    _buildTextField(p, 'Nama Ibu', _namaIbuCtrl, Icons.person_outline),
+                    _buildTextField(p, 'Pekerjaan Ibu', _pekerjaanIbuCtrl, Icons.work_outline),
+                    _buildTextField(p, 'Penghasilan Ibu', _penghasilanIbuCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
+                  ]),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            )),
         ),
       ),
     );
