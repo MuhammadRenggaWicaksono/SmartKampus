@@ -157,7 +157,8 @@ class _JadwalKuliahScreenState extends State<JadwalKuliahScreen> {
                           ),
                   ),
                 ],
-              )),
+              ),
+            ),
           ),
         );
       },

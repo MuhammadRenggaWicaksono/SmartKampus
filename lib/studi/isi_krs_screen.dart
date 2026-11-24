@@ -162,7 +162,10 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
   void _ajukanKrs() {
     if (_selectedKode.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pilih minimal 1 mata kuliah!'), backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text('Pilih minimal 1 mata kuliah!'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
@@ -171,8 +174,13 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Ajukan KRS', style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Text('Kamu memilih $_totalSksTerpilih SKS. Kirim ke Dosen Pembimbing Akademik untuk di-ACC?'),
+        title: const Text(
+          'Ajukan KRS',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Kamu memilih $_totalSksTerpilih SKS. Kirim ke Dosen Pembimbing Akademik untuk di-ACC?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -184,13 +192,21 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
               Navigator.pop(context); // Kembali ke menu utama
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('KRS berhasil diajukan! Menunggu ACC Dosen Pembimbing.'),
+                  content: Text(
+                    'KRS berhasil diajukan! Menunggu ACC Dosen Pembimbing.',
+                  ),
                   backgroundColor: Colors.green,
                 ),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-            child: const Text('Ya, Ajukan', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Ya, Ajukan',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -205,7 +221,9 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
         final bool isDark = currentTheme == AppThemeMode.dark;
         final bool isLgbt = currentTheme == AppThemeMode.lgbt;
 
-        final Color scaffoldBg = isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FA);
+        final Color scaffoldBg = isDark
+            ? const Color(0xFF121212)
+            : const Color(0xFFF8F9FA);
         final Color textColor = isDark ? Colors.white : Colors.black87;
         final Color cardColor = isDark
             ? const Color(0xFF1E1E1E)
@@ -215,14 +233,24 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
           decoration: isLgbt
               ? const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple],
+                    colors: [
+                      Colors.red,
+                      Colors.orange,
+                      Colors.yellow,
+                      Colors.green,
+                      Colors.blue,
+                      Colors.purple,
+                    ],
                   ),
                 )
               : BoxDecoration(color: scaffoldBg),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: Text('Pilih Mata Kuliah (${widget.shift})', style: TextStyle(color: textColor, fontSize: 18)),
+              title: Text(
+                'Pilih Mata Kuliah (${widget.shift})',
+                style: TextStyle(color: textColor, fontSize: 18),
+              ),
               backgroundColor: cardColor,
               iconTheme: IconThemeData(color: textColor),
               elevation: 0.5,
@@ -234,15 +262,29 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                 children: [
                   // Info Bar SKS
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    color: isDark ? Colors.blue.shade900.withValues(alpha: 0.4) : Colors.blue.shade50,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    color: isDark
+                        ? Colors.blue.shade900.withValues(alpha: 0.4)
+                        : Colors.blue.shade50,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Semester 5 (IFB5A)', style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+                        Text(
+                          'Semester 5 (IFB5A)',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: textColor,
+                          ),
+                        ),
                         Text(
                           'Terpilih: $_totalSksTerpilih / 26 SKS',
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
                         ),
                       ],
                     ),
@@ -255,7 +297,9 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                       itemCount: _daftarMatkul.length,
                       itemBuilder: (context, index) {
                         final item = _daftarMatkul[index];
-                        final bool isSelected = _selectedKode.contains(item['kode']);
+                        final bool isSelected = _selectedKode.contains(
+                          item['kode'],
+                        );
                         final bool isWajib = item['jenis'] == 'WAJIB';
                         final bool isPenuh = item['terisi'] >= item['max'];
 
@@ -271,7 +315,9 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                                 border: Border.all(
                                   color: isSelected
                                       ? Colors.blue
-                                      : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+                                      : (isDark
+                                            ? Colors.grey.shade800
+                                            : Colors.grey.shade200),
                                   width: isSelected ? 1.5 : 1.0,
                                 ),
                               ),
@@ -292,9 +338,14 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                                 title: Row(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: isWajib ? Colors.red.shade100 : Colors.blue.shade100,
+                                        color: isWajib
+                                            ? Colors.red.shade100
+                                            : Colors.blue.shade100,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Text(
@@ -302,12 +353,20 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                                         style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
-                                          color: isWajib ? Colors.red.shade800 : Colors.blue.shade800,
+                                          color: isWajib
+                                              ? Colors.red.shade800
+                                              : Colors.blue.shade800,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    Text(item['kode'], style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                    Text(
+                                      item['kode'],
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 subtitle: Column(
@@ -316,22 +375,44 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                                     const SizedBox(height: 4),
                                     Text(
                                       item['nama'],
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: textColor,
+                                      ),
                                     ),
                                     const SizedBox(height: 6),
-                                    Text('SKS: ${item['sks']} | Prasyarat: ${item['prasyarat']}', style: const TextStyle(fontSize: 12)),
-                                    Text('Dosen: ${item['dosen']}', style: const TextStyle(fontSize: 12)),
+                                    Text(
+                                      'SKS: ${item['sks']} | Prasyarat: ${item['prasyarat']}',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                    Text(
+                                      'Dosen: ${item['dosen']}',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
                                     const SizedBox(height: 4),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('${item['hari']}, ${item['jam']}', style: TextStyle(fontSize: 11, color: isDark ? Colors.grey.shade400 : Colors.grey.shade700, fontWeight: FontWeight.w600)),
+                                        Text(
+                                          '${item['hari']}, ${item['jam']}',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: isDark
+                                                ? Colors.grey.shade400
+                                                : Colors.grey.shade700,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                         Text(
                                           'Kuota: ${item['terisi']}/${item['max']} ${isPenuh ? '(PENUH)' : ''}',
                                           style: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
-                                            color: isPenuh ? Colors.red : Colors.green,
+                                            color: isPenuh
+                                                ? Colors.red
+                                                : Colors.green,
                                           ),
                                         ),
                                       ],
@@ -357,14 +438,24 @@ class _PilihMataKuliahScreenState extends State<PilihMataKuliahScreen> {
                         onPressed: _ajukanKrs,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                        child: const Text('Ajukan KRS Sekarang', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                        child: const Text(
+                          'Ajukan KRS Sekarang',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ],
-              )),
+              ),
+            ),
           ),
         );
       },

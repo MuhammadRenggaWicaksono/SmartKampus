@@ -99,10 +99,7 @@ void main() {
       await tester.tap(find.text('Masuk'));
       await tester.pump();
 
-      expect(
-        find.textContaining('Supabase belum terhubung'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('Supabase belum terhubung'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

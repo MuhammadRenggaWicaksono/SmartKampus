@@ -18,8 +18,7 @@ void main() {
         expect(key.isEmpty, isFalse);
         expect(key.contains('GANTI'), isFalse);
       } else {
-        final adaPlaceholder =
-            url.contains('GANTI') || key.contains('GANTI');
+        final adaPlaceholder = url.contains('GANTI') || key.contains('GANTI');
         final adaKosong = url.isEmpty || key.isEmpty;
         expect(adaPlaceholder || adaKosong, isTrue);
       }
@@ -42,21 +41,21 @@ void main() {
       expect(SupabaseService.sesi, isNull);
     });
 
-    test('semua query mengembalikan kosong, tidak melempar exception', () async {
-      // Ini penting: layar tidak boleh crash kalau Supabase belum diisi.
-      expect(await SupabaseService.profil(), isNull);
-      expect(await SupabaseService.ringkasan(), isNull);
-      expect(await SupabaseService.daftarIps(), isEmpty);
-      expect(await SupabaseService.daftarPresensi(), isEmpty);
-      expect(await SupabaseService.daftarKelasAktif(), isEmpty);
-      expect(await SupabaseService.hitungProfilTerlihat(), 0);
-    });
+    test(
+      'semua query mengembalikan kosong, tidak melempar exception',
+      () async {
+        // Ini penting: layar tidak boleh crash kalau Supabase belum diisi.
+        expect(await SupabaseService.profil(), isNull);
+        expect(await SupabaseService.ringkasan(), isNull);
+        expect(await SupabaseService.daftarIps(), isEmpty);
+        expect(await SupabaseService.daftarPresensi(), isEmpty);
+        expect(await SupabaseService.daftarKelasAktif(), isEmpty);
+        expect(await SupabaseService.hitungProfilTerlihat(), 0);
+      },
+    );
 
     test('masuk() menolak dengan pesan, bukan exception', () async {
-      final pesan = await SupabaseService.masuk(
-        email: 'a@b.c',
-        password: 'x',
-      );
+      final pesan = await SupabaseService.masuk(email: 'a@b.c', password: 'x');
       expect(pesan, isNotNull);
     });
 
@@ -141,7 +140,11 @@ void main() {
         'jam_mulai': '08:00:00',
         'jam_selesai': '10:30:00',
         'link_materi': null,
-        'mata_kuliah': {'kode': '111500', 'nama': 'SISTEM MANAJEMEN BASIS DATA', 'sks': 3},
+        'mata_kuliah': {
+          'kode': '111500',
+          'nama': 'SISTEM MANAJEMEN BASIS DATA',
+          'sks': 3,
+        },
         'dosen': {'nama': 'NASRUDDIN BIN IDRIS'},
       });
 

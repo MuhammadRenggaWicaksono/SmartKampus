@@ -84,9 +84,7 @@ class KartuPengumuman extends StatelessWidget {
     return Container(
       decoration: p.cardDeco(
         radius: 12,
-        borderColor: pengumuman.penting
-            ? warna.withValues(alpha: 0.45)
-            : null,
+        borderColor: pengumuman.penting ? warna.withValues(alpha: 0.45) : null,
       ),
       child: Material(
         color: Colors.transparent,

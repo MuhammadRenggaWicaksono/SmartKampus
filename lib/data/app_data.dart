@@ -133,8 +133,7 @@ class MataKuliahAktif {
       terlaksana == 0 ? 0 : ((hadir / terlaksana) * 100).round();
 
   /// Persentase kehadiran terhadap 16 pertemuan (dipakai buat warning 75%).
-  int get persenTerhadapRencana =>
-      ((hadir / kRencanaTatapMuka) * 100).round();
+  int get persenTerhadapRencana => ((hadir / kRencanaTatapMuka) * 100).round();
 
   int get totalAbsen => sakit + izin + alpa;
 }
@@ -190,83 +189,83 @@ class AppData {
   // ---------------------------------------------------- jadwal mingguan
   static const Map<String, List<KelasKuliah>> jadwalMingguan =
       <String, List<KelasKuliah>>{
-    'Senin': <KelasKuliah>[
-      KelasKuliah(
-        jam: '08:00 - 10:30',
-        kode: '111500',
-        nama: 'SISTEM MANAJEMEN BASIS DATA',
-        sks: 3,
-        ruang: 'LAB D (FIKOM)',
-        dosen: 'NASRUDDIN BIN IDRIS, S.Kom., M.Kom.',
-        adaLink: true,
-      ),
-      KelasKuliah(
-        jam: '10:30 - 13:00',
-        kode: '111400',
-        nama: 'SIMULASI DAN GAME KOMPUTER',
-        sks: 3,
-        ruang: 'LAB A (FIKOM)',
-        dosen: 'HERUZULKIFLI ROWA, S.Kom, M.Kom',
-      ),
-      KelasKuliah(
-        jam: '13:00 - 15:30',
-        kode: '111600',
-        nama: 'TEKNOLOGI APLIKASI BERGERAK',
-        sks: 3,
-        ruang: 'LAB B (FIKOM)',
-        dosen: 'ISTIA BUDI, S.T., M.M.',
-      ),
-    ],
-    'Selasa': <KelasKuliah>[
-      KelasKuliah(
-        jam: '13:00 - 15:30',
-        kode: '111100',
-        nama: 'PENALARAN KOMPUTER',
-        sks: 3,
-        ruang: 'A201',
-        dosen: 'ISA ROSITA, S.Kom., M.Cs.',
-      ),
-    ],
-    'Rabu': <KelasKuliah>[
-      KelasKuliah(
-        jam: '19:00 - 20:30',
-        kode: '111300',
-        nama: 'ROBOTIKA',
-        sks: 3,
-        ruang: 'LAB ROBOTIK (FIKOM)',
-        dosen: "MUHAMMAD SAFI'I, S.Kom., M.Kom.",
-      ),
-    ],
-    'Kamis': <KelasKuliah>[
-      KelasKuliah(
-        jam: '08:00 - 10:30',
-        kode: '110600',
-        nama: 'JARINGAN NIRKABEL',
-        sks: 3,
-        ruang: 'LAB JARINGAN (FIKOM)',
-        dosen: 'WISNU HERA PAMUNGKAS, S.T.P., M.Eng',
-      ),
-      KelasKuliah(
-        jam: '13:00 - 15:30',
-        kode: '111000',
-        nama: 'PEMROGRAMAN APLIKASI BERGERAK',
-        sks: 3,
-        ruang: 'LAB A (FIKOM)',
-        dosen: 'PRAMUDYA PRIMA INSAN, S.Kom., M.Kom.',
-      ),
-    ],
-    'Jumat': <KelasKuliah>[
-      KelasKuliah(
-        jam: '08:00 - 09:40',
-        kode: '000800',
-        nama: 'PENULISAN DAN PUBLIKASI ILMIAH',
-        sks: 2,
-        ruang: 'A202',
-        dosen: 'YUSUF WIBISONO, S.E., M.T.I.',
-        adaLink: true,
-      ),
-    ],
-  };
+        'Senin': <KelasKuliah>[
+          KelasKuliah(
+            jam: '08:00 - 10:30',
+            kode: '111500',
+            nama: 'SISTEM MANAJEMEN BASIS DATA',
+            sks: 3,
+            ruang: 'LAB D (FIKOM)',
+            dosen: 'NASRUDDIN BIN IDRIS, S.Kom., M.Kom.',
+            adaLink: true,
+          ),
+          KelasKuliah(
+            jam: '10:30 - 13:00',
+            kode: '111400',
+            nama: 'SIMULASI DAN GAME KOMPUTER',
+            sks: 3,
+            ruang: 'LAB A (FIKOM)',
+            dosen: 'HERUZULKIFLI ROWA, S.Kom, M.Kom',
+          ),
+          KelasKuliah(
+            jam: '13:00 - 15:30',
+            kode: '111600',
+            nama: 'TEKNOLOGI APLIKASI BERGERAK',
+            sks: 3,
+            ruang: 'LAB B (FIKOM)',
+            dosen: 'ISTIA BUDI, S.T., M.M.',
+          ),
+        ],
+        'Selasa': <KelasKuliah>[
+          KelasKuliah(
+            jam: '13:00 - 15:30',
+            kode: '111100',
+            nama: 'PENALARAN KOMPUTER',
+            sks: 3,
+            ruang: 'A201',
+            dosen: 'ISA ROSITA, S.Kom., M.Cs.',
+          ),
+        ],
+        'Rabu': <KelasKuliah>[
+          KelasKuliah(
+            jam: '19:00 - 20:30',
+            kode: '111300',
+            nama: 'ROBOTIKA',
+            sks: 3,
+            ruang: 'LAB ROBOTIK (FIKOM)',
+            dosen: "MUHAMMAD SAFI'I, S.Kom., M.Kom.",
+          ),
+        ],
+        'Kamis': <KelasKuliah>[
+          KelasKuliah(
+            jam: '08:00 - 10:30',
+            kode: '110600',
+            nama: 'JARINGAN NIRKABEL',
+            sks: 3,
+            ruang: 'LAB JARINGAN (FIKOM)',
+            dosen: 'WISNU HERA PAMUNGKAS, S.T.P., M.Eng',
+          ),
+          KelasKuliah(
+            jam: '13:00 - 15:30',
+            kode: '111000',
+            nama: 'PEMROGRAMAN APLIKASI BERGERAK',
+            sks: 3,
+            ruang: 'LAB A (FIKOM)',
+            dosen: 'PRAMUDYA PRIMA INSAN, S.Kom., M.Kom.',
+          ),
+        ],
+        'Jumat': <KelasKuliah>[
+          KelasKuliah(
+            jam: '08:00 - 09:40',
+            kode: '000800',
+            nama: 'PENULISAN DAN PUBLIKASI ILMIAH',
+            sks: 2,
+            ruang: 'A202',
+            dosen: 'YUSUF WIBISONO, S.E., M.T.I.',
+            adaLink: true,
+          ),
+        ],
+      };
 
   // ------------------------------------------- mata kuliah semester ini
   // 8 mata kuliah, total 23 SKS — sama persis dengan KRS 2026/2027 Ganjil.
@@ -380,26 +379,10 @@ class AppData {
       jenis: 'Genap',
       ips: 3.76,
     ),
-    IpsSemester(
-      semester: 5,
-      tahunAkademik: '2026/2027',
-      jenis: 'Ganjil',
-    ),
-    IpsSemester(
-      semester: 6,
-      tahunAkademik: '2026/2027',
-      jenis: 'Genap',
-    ),
-    IpsSemester(
-      semester: 7,
-      tahunAkademik: '2027/2028',
-      jenis: 'Ganjil',
-    ),
-    IpsSemester(
-      semester: 8,
-      tahunAkademik: '2027/2028',
-      jenis: 'Genap',
-    ),
+    IpsSemester(semester: 5, tahunAkademik: '2026/2027', jenis: 'Ganjil'),
+    IpsSemester(semester: 6, tahunAkademik: '2026/2027', jenis: 'Genap'),
+    IpsSemester(semester: 7, tahunAkademik: '2027/2028', jenis: 'Ganjil'),
+    IpsSemester(semester: 8, tahunAkademik: '2027/2028', jenis: 'Genap'),
   ];
 
   /// IPS minimal yang ditargetkan.
@@ -478,8 +461,7 @@ class AppData {
       mataKuliahAktif.where((mk) => mk.persenTerhadapRencana < 75).toList();
 
   // ------------------------------------------------------------- helper
-  static String namaHariDari(DateTime tanggal) =>
-      namaHari[tanggal.weekday - 1];
+  static String namaHariDari(DateTime tanggal) => namaHari[tanggal.weekday - 1];
 
   /// Kelas hari ini. Kalau hari ini tidak ada kelas, ambil hari terdekat
   /// berikutnya yang ada kelas supaya dashboard tidak tampak kosong.
@@ -501,7 +483,11 @@ class AppData {
       }
     }
 
-    return JadwalHari(hari: hariIni, hariIni: true, kelas: const <KelasKuliah>[]);
+    return JadwalHari(
+      hari: hariIni,
+      hariIni: true,
+      kelas: const <KelasKuliah>[],
+    );
   }
 
   /// Mata kuliah yang sedang berlangsung sekarang (kalau ada).

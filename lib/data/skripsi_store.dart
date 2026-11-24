@@ -120,8 +120,8 @@ const List<PembimbingSkripsi> pembimbingSkripsi = <PembimbingSkripsi>[
 class SkripsiStore {
   SkripsiStore._();
 
-  static final ValueNotifier<List<PengajuanSkripsi>> pengajuan =
-      ValueNotifier<List<PengajuanSkripsi>>(<PengajuanSkripsi>[
+  static final ValueNotifier<List<PengajuanSkripsi>>
+  pengajuan = ValueNotifier<List<PengajuanSkripsi>>(<PengajuanSkripsi>[
     PengajuanSkripsi(
       judul:
           'Penerapan Algoritma YOLOv8 untuk Deteksi Penggunaan Alat Pelindung '

@@ -12,12 +12,11 @@ import 'package:app_kampus/theme_notifier.dart';
 void main() {
   tearDown(() => appThemeNotifier.value = AppThemeMode.light);
 
-  Future<void> potret(
-    WidgetTester tester,
-    Widget layar,
-    String nama,
-  ) async {
-    await expectLater(find.byType(layar.runtimeType), matchesGoldenFile('goldens/$nama.png'));
+  Future<void> potret(WidgetTester tester, Widget layar, String nama) async {
+    await expectLater(
+      find.byType(layar.runtimeType),
+      matchesGoldenFile('goldens/$nama.png'),
+    );
   }
 
   testWidgets('potret menu Akademik (light & dark)', (tester) async {
@@ -33,6 +32,21 @@ void main() {
     appThemeNotifier.value = AppThemeMode.dark;
     await tester.pump(const Duration(milliseconds: 300));
     await potret(tester, const AkademikScreen(), 'akademik_dark');
+  });
+
+  testWidgets('potret menu Akademik layar lebar', (tester) async {
+    tester.view.physicalSize = const Size(2200, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    appThemeNotifier.value = AppThemeMode.light;
+    await tester.pumpWidget(const MaterialApp(home: AkademikScreen()));
+    await tester.pump(const Duration(milliseconds: 300));
+    await expectLater(
+      find.byType(AkademikScreen),
+      matchesGoldenFile('goldens/akademik_lebar.png'),
+    );
+    await tester.pumpWidget(const SizedBox());
   });
 
   testWidgets('potret halaman Skripsi', (tester) async {

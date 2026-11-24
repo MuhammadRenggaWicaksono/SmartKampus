@@ -19,15 +19,23 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
   final _prodiCtrl = TextEditingController(text: 'Teknik Informatika (S1)');
   final _nimCtrl = TextEditingController(text: '2026101234');
   final _dosenCtrl = TextEditingController(text: 'Dr. Budi Santoso, M.Kom');
-  final _emailOffCtrl = TextEditingController(text: 'rengga@student.kampus.ac.id');
-  final _emailPersCtrl = TextEditingController(text: 'rengga.pribadi@gmail.com');
+  final _emailOffCtrl = TextEditingController(
+    text: 'rengga@student.kampus.ac.id',
+  );
+  final _emailPersCtrl = TextEditingController(
+    text: 'rengga.pribadi@gmail.com',
+  );
   final _tempatLahirCtrl = TextEditingController(text: 'Balikpapan');
   final _tglLahirCtrl = TextEditingController(text: '15 Agustus 2005');
   final _statusCtrl = TextEditingController(text: 'Mahasiswa Aktif');
   final _jkCtrl = TextEditingController(text: 'Laki-laki');
   final _agamaCtrl = TextEditingController(text: 'Islam');
-  final _alamatAsalCtrl = TextEditingController(text: 'Jl. Sudirman No. 45, Balikpapan');
-  final _alamatSkrgCtrl = TextEditingController(text: 'Kos Mawar, Jl. Kampus Raya No. 2');
+  final _alamatAsalCtrl = TextEditingController(
+    text: 'Jl. Sudirman No. 45, Balikpapan',
+  );
+  final _alamatSkrgCtrl = TextEditingController(
+    text: 'Kos Mawar, Jl. Kampus Raya No. 2',
+  );
   final _telpCtrl = TextEditingController(text: '081234567890');
 
   @override
@@ -74,7 +82,10 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Biodata Mahasiswa', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            title: Text(
+              'Biodata Mahasiswa',
+              style: TextStyle(color: p.textPrimary, fontSize: 18),
+            ),
             backgroundColor: p.card,
             foregroundColor: p.textPrimary,
             iconTheme: IconThemeData(color: p.textPrimary),
@@ -110,12 +121,20 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
                     Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Row(
                         children: [
                           Icon(Icons.info_outline, color: p.accentText),
                           const SizedBox(width: 8),
-                          Expanded(child: Text('Mode edit aktif. Ubah data lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
+                          Expanded(
+                            child: Text(
+                              'Mode edit aktif. Ubah data lalu tekan Simpan.',
+                              style: TextStyle(color: p.accentText),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -123,37 +142,111 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
                   // KELOMPOK 1: INFORMASI AKADEMIK
                   _buildSectionTitle('INFORMASI AKADEMIK', p),
                   _buildCardGroup(p, [
-                    _buildTextField(p, 'NIM', _nimCtrl, Icons.badge_outlined, isReadOnly: true), // NIM biasanya gak bisa diedit
-                    _buildTextField(p, 'Program Studi', _prodiCtrl, Icons.school_outlined, isReadOnly: true),
-                    _buildTextField(p, 'Status Registrasi', _statusCtrl, Icons.verified_user_outlined, isReadOnly: true),
-                    _buildTextField(p, 'Dosen Pembimbing Akademik', _dosenCtrl, Icons.supervisor_account_outlined, isReadOnly: true),
+                    _buildTextField(
+                      p,
+                      'NIM',
+                      _nimCtrl,
+                      Icons.badge_outlined,
+                      isReadOnly: true,
+                    ), // NIM biasanya gak bisa diedit
+                    _buildTextField(
+                      p,
+                      'Program Studi',
+                      _prodiCtrl,
+                      Icons.school_outlined,
+                      isReadOnly: true,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Status Registrasi',
+                      _statusCtrl,
+                      Icons.verified_user_outlined,
+                      isReadOnly: true,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Dosen Pembimbing Akademik',
+                      _dosenCtrl,
+                      Icons.supervisor_account_outlined,
+                      isReadOnly: true,
+                    ),
                   ]),
                   const SizedBox(height: 20),
 
                   // KELOMPOK 2: DATA PRIBADI
                   _buildSectionTitle('DATA PRIBADI', p),
                   _buildCardGroup(p, [
-                    _buildTextField(p, 'Nama Lengkap', _namaCtrl, Icons.person_outline),
-                    _buildTextField(p, 'Tempat Lahir', _tempatLahirCtrl, Icons.location_city),
-                    _buildTextField(p, 'Tanggal Lahir', _tglLahirCtrl, Icons.calendar_today),
+                    _buildTextField(
+                      p,
+                      'Nama Lengkap',
+                      _namaCtrl,
+                      Icons.person_outline,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Tempat Lahir',
+                      _tempatLahirCtrl,
+                      Icons.location_city,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Tanggal Lahir',
+                      _tglLahirCtrl,
+                      Icons.calendar_today,
+                    ),
                     _buildTextField(p, 'Jenis Kelamin', _jkCtrl, Icons.wc),
-                    _buildTextField(p, 'Agama', _agamaCtrl, Icons.favorite_border),
+                    _buildTextField(
+                      p,
+                      'Agama',
+                      _agamaCtrl,
+                      Icons.favorite_border,
+                    ),
                   ]),
                   const SizedBox(height: 20),
 
                   // KELOMPOK 3: KONTAK & ALAMAT
                   _buildSectionTitle('KONTAK & ALAMAT', p),
                   _buildCardGroup(p, [
-                    _buildTextField(p, 'Email (Official)', _emailOffCtrl, Icons.email_outlined, isReadOnly: true),
-                    _buildTextField(p, 'Email (Personal)', _emailPersCtrl, Icons.alternate_email),
-                    _buildTextField(p, 'Nomor Telepon', _telpCtrl, Icons.phone_outlined, keyboardType: TextInputType.phone),
-                    _buildTextField(p, 'Alamat Asal', _alamatAsalCtrl, Icons.home_outlined, maxLines: 2),
-                    _buildTextField(p, 'Alamat Sekarang', _alamatSkrgCtrl, Icons.location_on_outlined, maxLines: 2),
+                    _buildTextField(
+                      p,
+                      'Email (Official)',
+                      _emailOffCtrl,
+                      Icons.email_outlined,
+                      isReadOnly: true,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Email (Personal)',
+                      _emailPersCtrl,
+                      Icons.alternate_email,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Nomor Telepon',
+                      _telpCtrl,
+                      Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Alamat Asal',
+                      _alamatAsalCtrl,
+                      Icons.home_outlined,
+                      maxLines: 2,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Alamat Sekarang',
+                      _alamatSkrgCtrl,
+                      Icons.location_on_outlined,
+                      maxLines: 2,
+                    ),
                   ]),
                   const SizedBox(height: 30),
                 ],
               ),
-            )),
+            ),
+          ),
         ),
       ),
     );
@@ -165,7 +258,11 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Text(
         title,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: p.textSecondary,
+        ),
       ),
     );
   }
@@ -209,7 +306,10 @@ class _BiodataMahasiswaScreenState extends State<BiodataMahasiswaScreen> {
           prefixIcon: Icon(icon, color: enabled ? p.accent : p.textSecondary),
           filled: true,
           fillColor: enabled ? p.inputFill : p.surfaceAlt,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: p.border),

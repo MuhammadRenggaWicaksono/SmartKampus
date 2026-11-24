@@ -57,9 +57,7 @@ void main() {
     expect(find.text('Pilih dari Galeri'), findsNothing);
   });
 
-  testWidgets('ketuk bagian avatar juga memicu aksi yang sama', (
-    tester,
-  ) async {
+  testWidgets('ketuk bagian avatar juga memicu aksi yang sama', (tester) async {
     _pasangLayar(tester);
     await pumpAvatar(tester);
 

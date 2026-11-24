@@ -30,26 +30,25 @@ void main() {
       await tester.pump();
     }
 
-  testWidgets('menampilkan grafik absensi tanpa kontrol pergantian mode', (
-    tester,
-  ) async {
-    _pasangLayar(tester);
-    await pumpChart(tester);
+    testWidgets('menampilkan grafik absensi tanpa kontrol pergantian mode', (
+      tester,
+    ) async {
+      _pasangLayar(tester);
+      await pumpChart(tester);
 
-    expect(find.text('Statistik Akademik'), findsOneWidget);
-    expect(
-      find.textContaining('Kehadiran ${AppData.persenKehadiran}%'),
-      findsOneWidget,
-    );
-    expect(find.text('Hadir ${AppData.totalHadir}'), findsOneWidget);
-    expect(find.text('Sakit ${AppData.totalSakit}'), findsOneWidget);
-    expect(find.text('Izin ${AppData.totalIzin}'), findsOneWidget);
-    expect(find.text('Alpa ${AppData.totalAlpa}'), findsOneWidget);
-    expect(find.text('IPS 1-8'), findsNothing);
-    expect(find.text('Tatap Muka'), findsNothing);
-    expect(find.byType(StatistikChart), findsOneWidget);
-  });
-
+      expect(find.text('Statistik Akademik'), findsOneWidget);
+      expect(
+        find.textContaining('Kehadiran ${AppData.persenKehadiran}%'),
+        findsOneWidget,
+      );
+      expect(find.text('Hadir ${AppData.totalHadir}'), findsOneWidget);
+      expect(find.text('Sakit ${AppData.totalSakit}'), findsOneWidget);
+      expect(find.text('Izin ${AppData.totalIzin}'), findsOneWidget);
+      expect(find.text('Alpa ${AppData.totalAlpa}'), findsOneWidget);
+      expect(find.text('IPS 1-8'), findsNothing);
+      expect(find.text('Tatap Muka'), findsNothing);
+      expect(find.byType(StatistikChart), findsOneWidget);
+    });
 
     testWidgets('digambar tanpa error di ketiga tema', (tester) async {
       _pasangLayar(tester);
@@ -78,7 +77,10 @@ void main() {
       expect(find.text('SKS DIAMBIL'), findsOneWidget);
       expect(find.text('sisa ${AppData.sksSisa} SKS'), findsOneWidget);
       expect(find.text(AppData.labelSksTotal), findsOneWidget);
-      expect(find.text('${AppData.sksDitempuh} / $kSksTargetLulus'), findsOneWidget);
+      expect(
+        find.text('${AppData.sksDitempuh} / $kSksTargetLulus'),
+        findsOneWidget,
+      );
       expect(find.text('116 / 144'), findsOneWidget);
 
       // sel bento: bar SKS, chip tagihan, dan selisih terhadap target IPS

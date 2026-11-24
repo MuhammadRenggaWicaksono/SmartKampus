@@ -13,14 +13,15 @@ class PesanBaruScreen extends StatefulWidget {
 class _PesanBaruScreenState extends State<PesanBaruScreen> {
   // --- Controller & Variabel ---
   String? _tujuanTerpilih; // Awalnya null agar menampilkan '-----'
-  
-  final _penerimaSpesifikCtrl = TextEditingController(); // Untuk NIM atau Nama Dosen
+
+  final _penerimaSpesifikCtrl =
+      TextEditingController(); // Untuk NIM atau Nama Dosen
   final _isiPesanCtrl = TextEditingController();
 
   final List<String> _pilihanTujuan = [
     'SIAM (MAHASISWA)',
     'SIMA (DOSEN)',
-    'SIRAK (PROGRAM STUDI)'
+    'SIRAK (PROGRAM STUDI)',
   ];
 
   @override
@@ -33,23 +34,41 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
   void _kirimPesan() {
     // Validasi pengecekan form
     if (_tujuanTerpilih == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pilih tujuan kategori terlebih dahulu!'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Pilih tujuan kategori terlebih dahulu!'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
     if (_penerimaSpesifikCtrl.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Detail penerima (NIM/Nama) harus diisi!'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Detail penerima (NIM/Nama) harus diisi!'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
     if (_isiPesanCtrl.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Isi pesan tidak boleh kosong!'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Isi pesan tidak boleh kosong!'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
     // TODO: Kirim data (_tujuanTerpilih, _penerimaSpesifikCtrl.text, _isiPesanCtrl.text) ke API
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Pesan berhasil dikirim!'), backgroundColor: Colors.green),
+      const SnackBar(
+        content: Text('Pesan berhasil dikirim!'),
+        backgroundColor: Colors.green,
+      ),
     );
-    
+
     // Reset form
     setState(() {
       _tujuanTerpilih = null;
@@ -68,7 +87,10 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: Text('Pesan', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+              title: Text(
+                'Pesan',
+                style: TextStyle(color: p.textPrimary, fontSize: 18),
+              ),
               backgroundColor: p.card,
               foregroundColor: p.textPrimary,
               iconTheme: IconThemeData(color: p.textPrimary),
@@ -87,11 +109,9 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
               paddingHp: EdgeInsets.zero,
               paddingLebar: EdgeInsets.zero,
               child: TabBarView(
-                children: [
-                  _buildKotakMasukTab(p),
-                  _buildTulisPesanTab(p),
-                ],
-              )),
+                children: [_buildKotakMasukTab(p), _buildTulisPesanTab(p)],
+              ),
+            ),
           ),
         ),
       ),
@@ -105,9 +125,19 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
         children: [
           Icon(Icons.drafts_outlined, size: 80, color: p.textSecondary),
           const SizedBox(height: 16),
-          Text('Tidak Ada Pesan Masuk', style: TextStyle(fontSize: 16, color: p.textSecondary, fontWeight: FontWeight.bold)),
+          Text(
+            'Tidak Ada Pesan Masuk',
+            style: TextStyle(
+              fontSize: 16,
+              color: p.textSecondary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text('Pesan dari dosen atau kampus akan muncul di sini', style: TextStyle(fontSize: 13, color: p.textMuted)),
+          Text(
+            'Pesan dari dosen atau kampus akan muncul di sini',
+            style: TextStyle(fontSize: 13, color: p.textMuted),
+          ),
         ],
       ),
     );
@@ -122,7 +152,14 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Tujuan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.textSecondary)),
+            Text(
+              'Tujuan',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: p.textSecondary,
+              ),
+            ),
             const SizedBox(height: 8),
             // --- DROPDOWN KATEGORI ---
             Container(
@@ -134,14 +171,27 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: _tujuanTerpilih,
-                  hint: Text('-----', style: TextStyle(color: p.textPrimary, fontWeight: FontWeight.bold)), // Sesuai website
+                  hint: Text(
+                    '-----',
+                    style: TextStyle(
+                      color: p.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ), // Sesuai website
                   isExpanded: true,
                   dropdownColor: p.card,
                   icon: const Icon(Icons.arrow_drop_down, color: Colors.blue),
                   items: _pilihanTujuan.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: p.textPrimary)),
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: p.textPrimary,
+                        ),
+                      ),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -158,7 +208,14 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
             // --- KOLOM DINAMIS (Muncul sesuai pilihan dropdown) ---
             _buildKolomPenerimaDinamis(p),
 
-            Text('Isi Pesan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.textSecondary)),
+            Text(
+              'Isi Pesan',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: p.textSecondary,
+              ),
+            ),
             const SizedBox(height: 8),
             // --- FORM ISI PESAN ---
             TextFormField(
@@ -170,8 +227,14 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
                 hintStyle: TextStyle(color: p.textSecondary, fontSize: 14),
                 filled: true,
                 fillColor: p.inputFill,
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: p.border)),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.blue, width: 2)),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: p.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.blue, width: 2),
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -190,10 +253,18 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
                     },
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       side: BorderSide(color: p.border),
                     ),
-                    child: Text('Batal', style: TextStyle(color: p.textSecondary, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      'Batal',
+                      style: TextStyle(
+                        color: p.textSecondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -203,9 +274,17 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    child: const Text('Kirim', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    child: const Text(
+                      'Kirim',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -247,7 +326,14 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(labelText, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.accentText)),
+          Text(
+            labelText,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: p.accentText,
+            ),
+          ),
           const SizedBox(height: 8),
           TextFormField(
             controller: _penerimaSpesifikCtrl,
@@ -259,8 +345,14 @@ class _PesanBaruScreenState extends State<PesanBaruScreen> {
               prefixIcon: Icon(iconData, color: Colors.blue),
               filled: true,
               fillColor: p.inputFill,
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.blue.shade200)),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.blue, width: 2)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.blue.shade200),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.blue, width: 2),
+              ),
             ),
           ),
         ],

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:app_kampus/core/app_palette.dart';
 import 'package:app_kampus/theme_notifier.dart';
 
-typedef PaletteBuilder = Widget Function(BuildContext context, AppPalette palette);
+typedef PaletteBuilder = Widget Function(
+  BuildContext context,
+  AppPalette palette,
+);
 
 /// Membangun ulang widget secara otomatis saat tema global berubah
 /// (Light / Dark / LGBT) dan langsung memberikan [AppPalette] yang sesuai.

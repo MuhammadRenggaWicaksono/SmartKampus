@@ -49,7 +49,8 @@ class PresensiScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   ...AppData.mataKuliahAktif.map((mk) => _buildKartuMk(p, mk)),
                 ],
-              )),
+              ),
+            ),
           ),
         );
       },
@@ -74,7 +75,9 @@ class PresensiScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: (persen >= 75 ? kHadir : kAlpa).withValues(alpha: 0.15),
+                  color: (persen >= 75 ? kHadir : kAlpa).withValues(
+                    alpha: 0.15,
+                  ),
                 ),
                 child: Text(
                   '$persen%',
@@ -150,10 +153,7 @@ class PresensiScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(fontSize: 11, color: p.textSecondary),
-          ),
+          Text(label, style: TextStyle(fontSize: 11, color: p.textSecondary)),
         ],
       ),
     );
@@ -194,10 +194,7 @@ class PresensiScreen extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: (rawan ? kAlpa : kHadir).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
@@ -249,15 +246,30 @@ class PresensiScreen extends StatelessWidget {
         child: Row(
           children: [
             if (mk.hadir > 0)
-              Expanded(flex: mk.hadir, child: ColoredBox(color: kHadir)),
+              Expanded(
+                flex: mk.hadir,
+                child: ColoredBox(color: kHadir),
+              ),
             if (mk.sakit > 0)
-              Expanded(flex: mk.sakit, child: ColoredBox(color: kSakit)),
+              Expanded(
+                flex: mk.sakit,
+                child: ColoredBox(color: kSakit),
+              ),
             if (mk.izin > 0)
-              Expanded(flex: mk.izin, child: ColoredBox(color: kIzin)),
+              Expanded(
+                flex: mk.izin,
+                child: ColoredBox(color: kIzin),
+              ),
             if (mk.alpa > 0)
-              Expanded(flex: mk.alpa, child: ColoredBox(color: kAlpa)),
+              Expanded(
+                flex: mk.alpa,
+                child: ColoredBox(color: kAlpa),
+              ),
             if (sisa > 0)
-              Expanded(flex: sisa, child: ColoredBox(color: p.surfaceAlt)),
+              Expanded(
+                flex: sisa,
+                child: ColoredBox(color: p.surfaceAlt),
+              ),
           ],
         ),
       ),

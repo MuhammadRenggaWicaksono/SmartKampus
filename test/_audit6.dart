@@ -8,11 +8,15 @@ import 'package:app_kampus/theme_notifier.dart';
 
 double _lin(double v) {
   v = v / 255.0;
-  return v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
+  return v <= 0.03928
+      ? v / 12.92
+      : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
 }
 
 double _lum(Color c) =>
-    0.2126 * _lin(c.r * 255) + 0.7152 * _lin(c.g * 255) + 0.0722 * _lin(c.b * 255);
+    0.2126 * _lin(c.r * 255) +
+    0.7152 * _lin(c.g * 255) +
+    0.0722 * _lin(c.b * 255);
 
 double ratio(Color a, Color b) {
   final la = _lum(a), lb = _lum(b);
@@ -31,10 +35,14 @@ void main() {
 
     appThemeNotifier.value = AppThemeMode.light;
     final p = AppPalette(AppThemeMode.light);
-    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: DashboardScreen())));
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: DashboardScreen())),
+    );
     await tester.pumpAndSettle();
 
-    debugPrint('card=${hex(p.card)} bg=${hex(p.background)} alt=${hex(p.surfaceAlt)}');
+    debugPrint(
+      'card=${hex(p.card)} bg=${hex(p.background)} alt=${hex(p.surfaceAlt)}',
+    );
     for (final e in find.byType(Text).evaluate()) {
       final w = e.widget as Text;
       final st = w.style ?? const TextStyle();

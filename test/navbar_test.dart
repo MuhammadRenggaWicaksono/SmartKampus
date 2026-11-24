@@ -74,7 +74,8 @@ void main() {
     expect(
       lebarLabelTerpanjang,
       lessThanOrEqualTo(slot),
-      reason: 'label terpanjang ±${lebarLabelTerpanjang.toStringAsFixed(1)}dp '
+      reason:
+          'label terpanjang ±${lebarLabelTerpanjang.toStringAsFixed(1)}dp '
           'tidak muat di slot ${slot.toStringAsFixed(1)}dp',
     );
 

@@ -485,10 +485,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 5),
                     Text(
                       '$absen kali tidak hadir',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: p.textCardSupport,
-                      ),
+                      style: TextStyle(fontSize: 13, color: p.textCardSupport),
                     ),
                     const SizedBox(height: 10),
                     ClipRRect(
@@ -550,10 +547,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       flex: 100,
-                      child: SizedBox(
-                        height: 164,
-                        child: _buildSelTagihan(p),
-                      ),
+                      child: SizedBox(height: 164, child: _buildSelTagihan(p)),
                     ),
                   ],
                 )
@@ -570,7 +564,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 Expanded(
                                   flex: 92,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       _buildSelSks(p),
                                       const SizedBox(height: 10),

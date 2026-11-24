@@ -83,10 +83,13 @@ class SkripsiScreen extends StatelessWidget {
                   if (daftar.isEmpty)
                     _buildKosong(p)
                   else
-                    ...daftar.map((item) => _buildKartuPengajuan(context, p, item)),
+                    ...daftar.map(
+                      (item) => _buildKartuPengajuan(context, p, item),
+                    ),
                 ],
               ),
-            )),
+            ),
+          ),
           bottomNavigationBar: _buildTombolTambah(context, p),
         ),
       ),
@@ -437,10 +440,7 @@ class SkripsiScreen extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 9,
-                  vertical: 3,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                 decoration: BoxDecoration(
                   color: warnaStatus.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
@@ -494,7 +494,11 @@ class SkripsiScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.sticky_note_2_outlined, size: 13, color: p.textMuted),
+                  Icon(
+                    Icons.sticky_note_2_outlined,
+                    size: 13,
+                    color: p.textMuted,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(

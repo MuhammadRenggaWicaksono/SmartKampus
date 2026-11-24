@@ -87,7 +87,8 @@ class StatistikChart extends StatelessWidget {
     );
   }
 
-  String _subtitle() => 'Kehadiran ${AppData.persenKehadiran}% · '
+  String _subtitle() =>
+      'Kehadiran ${AppData.persenKehadiran}% · '
       '${AppData.totalAbsen} kali tidak hadir dari '
       '${AppData.totalPertemuanTerlaksana} pertemuan';
 

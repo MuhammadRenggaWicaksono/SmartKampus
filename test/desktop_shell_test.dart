@@ -27,7 +27,9 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('laptop 1440x900: rail samping, tanpa bilah bawah', (tester) async {
+  testWidgets('laptop 1440x900: rail samping, tanpa bilah bawah', (
+    tester,
+  ) async {
     pasangLayar(tester, const Size(1440, 900));
 
     await tester.pumpWidget(const MaterialApp(home: MainScreen()));
@@ -59,7 +61,9 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('laptop 1024dp (tepat di atas ambang) tetap rail', (tester) async {
+  testWidgets('laptop 1024dp (tepat di atas ambang) tetap rail', (
+    tester,
+  ) async {
     pasangLayar(tester, const Size(1024, 768));
 
     await tester.pumpWidget(const MaterialApp(home: MainScreen()));

@@ -102,7 +102,8 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                   },
                 );
               },
-            )),
+            ),
+          ),
         ),
       ),
     );
@@ -237,8 +238,7 @@ class PengumumanDetailScreen extends StatelessWidget {
   Future<void> _salin(BuildContext context, String url) async {
     await Clipboard.setData(ClipboardData(text: url));
     if (!context.mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Tautan disalin')));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Tautan disalin')));
   }
 }

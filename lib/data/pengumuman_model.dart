@@ -58,8 +58,7 @@ class Pengumuman {
 
   /// `tanggal_mulai` bisa diisi tanggal masa depan untuk menjadwalkan
   /// pengumuman, jadi yang belum waktunya belum ikut tampil.
-  bool get sudahTerbit =>
-      !_hari(DateTime.now()).isBefore(_hari(tanggalMulai));
+  bool get sudahTerbit => !_hari(DateTime.now()).isBefore(_hari(tanggalMulai));
 
   /// Layak tampil di feed sekarang.
   bool get aktif => sudahTerbit && !kedaluwarsa;

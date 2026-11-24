@@ -42,7 +42,9 @@ class _TambahJudulSkripsiScreenState extends State<TambahJudulSkripsiScreen> {
     final t = teks.trim();
     if (t.isEmpty || t.contains(' ')) return false;
     final kecil = t.toLowerCase();
-    if (kecil.startsWith('http://') || kecil.startsWith('https://')) return true;
+    if (kecil.startsWith('http://') || kecil.startsWith('https://')) {
+      return true;
+    }
     return t.contains('.') && t.length > 3;
   }
 
@@ -144,7 +146,8 @@ class _TambahJudulSkripsiScreenState extends State<TambahJudulSkripsiScreen> {
                   _buildBagianForm(p),
                 ],
               ),
-            )),
+            ),
+          ),
           bottomNavigationBar: _buildFooter(p),
         ),
       ),
@@ -178,7 +181,10 @@ class _TambahJudulSkripsiScreenState extends State<TambahJudulSkripsiScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          _buildPoin(p, 'Mohon melengkapi isian link berkas, minimal 1 pengisian.'),
+          _buildPoin(
+            p,
+            'Mohon melengkapi isian link berkas, minimal 1 pengisian.',
+          ),
           const SizedBox(height: 6),
           _buildPoin(
             p,
@@ -255,7 +261,8 @@ class _TambahJudulSkripsiScreenState extends State<TambahJudulSkripsiScreen> {
               p,
               hint: 'https://drive.google.com/...',
               ikon: Icons.link,
-              bantuan: 'Wajib diisi. Berkas pendukung judul (proposal / jurnal).',
+              bantuan:
+                  'Wajib diisi. Berkas pendukung judul (proposal / jurnal).',
             ),
           ),
           const SizedBox(height: 20),

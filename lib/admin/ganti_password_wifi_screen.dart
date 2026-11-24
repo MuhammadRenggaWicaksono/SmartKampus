@@ -12,13 +12,21 @@ class GantiPasswordWifiScreen extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Ganti Password Wifi', style: TextStyle(color: p.textPrimary)),
+            title: Text(
+              'Ganti Password Wifi',
+              style: TextStyle(color: p.textPrimary),
+            ),
             backgroundColor: p.card,
             foregroundColor: p.textPrimary,
             iconTheme: IconThemeData(color: p.textPrimary),
             elevation: 0.5,
           ),
-          body: Center(child: Text('Formulir Ganti Password Wifi Kampus', style: TextStyle(color: p.textPrimary))),
+          body: Center(
+            child: Text(
+              'Formulir Ganti Password Wifi Kampus',
+              style: TextStyle(color: p.textPrimary),
+            ),
+          ),
         ),
       ),
     );

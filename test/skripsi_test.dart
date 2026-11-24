@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:app_kampus/akademik/kp_screen.dart';
 import 'package:app_kampus/akademik/skripsi_screen.dart';
 import 'package:app_kampus/akademik/tambah_judul_skripsi_screen.dart';
 import 'package:app_kampus/data/skripsi_store.dart';
@@ -96,14 +97,14 @@ void main() {
       // lencana status ikut tampil
       expect(find.text('23 SKS'), findsOneWidget);
       expect(find.text('IPS 3.68'), findsOneWidget);
-      expect(find.text('116/144'), findsOneWidget);
+      // pilar TOTAL SKS di kartu ringkasan
+      expect(find.text('116'), findsOneWidget);
+      expect(find.text('dari 144 SKS'), findsOneWidget);
       expect(find.text('1 judul diajukan'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('Kerja Praktik memunculkan notifikasi belum tersedia', (
-      tester,
-    ) async {
+    testWidgets('Kerja Praktik membuka halaman KP', (tester) async {
       _pasangLayar(tester, tinggi: 3600);
       await tester.pumpWidget(const MaterialApp(home: AkademikScreen()));
       await tester.pump();
@@ -112,12 +113,9 @@ void main() {
       await tester.ensureVisible(kp);
       await tester.pump();
       await tester.tap(kp);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(
-        find.text('Menu Kerja Praktik belum tersedia'),
-        findsOneWidget,
-      );
+      expect(find.byType(KpScreen), findsOneWidget);
     });
 
     testWidgets('menu Skripsi membuka halaman Skripsi', (tester) async {
@@ -229,9 +227,7 @@ void main() {
       expect(find.text('TAMBAH JUDUL SKRIPSI'), findsOneWidget);
       expect(find.text('Message'), findsOneWidget);
       expect(
-        find.text(
-          'Mohon melengkapi isian link berkas, minimal 1 pengisian.',
-        ),
+        find.text('Mohon melengkapi isian link berkas, minimal 1 pengisian.'),
         findsOneWidget,
       );
       expect(

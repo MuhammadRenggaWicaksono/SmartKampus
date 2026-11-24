@@ -18,7 +18,10 @@ class PerkuliahanScreen extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Perkuliahan', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            title: Text(
+              'Perkuliahan',
+              style: TextStyle(color: p.textPrimary, fontSize: 18),
+            ),
             backgroundColor: p.card,
             foregroundColor: p.textPrimary,
             elevation: 0.5,
@@ -33,7 +36,11 @@ class PerkuliahanScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Aktivitas Perkuliahan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.textPrimary),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: p.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -53,7 +60,12 @@ class PerkuliahanScreen extends StatelessWidget {
                             icon: Icons.calendar_month_outlined,
                             color: Colors.blue,
                             p: p,
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const JadwalKuliahScreen())),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const JadwalKuliahScreen(),
+                              ),
+                            ),
                           ),
                           _buildMenuCard(
                             context,
@@ -61,7 +73,12 @@ class PerkuliahanScreen extends StatelessWidget {
                             icon: Icons.how_to_reg_outlined,
                             color: Colors.teal,
                             p: p,
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PresensiScreen())),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const PresensiScreen(),
+                              ),
+                            ),
                           ),
                           _buildMenuCard(
                             context,
@@ -69,7 +86,12 @@ class PerkuliahanScreen extends StatelessWidget {
                             icon: Icons.quiz_outlined,
                             color: Colors.orange,
                             p: p,
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const JadwalUjianScreen())),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const JadwalUjianScreen(),
+                              ),
+                            ),
                           ),
                           _buildMenuCard(
                             context,
@@ -77,7 +99,12 @@ class PerkuliahanScreen extends StatelessWidget {
                             icon: Icons.event_note_outlined,
                             color: Colors.purple,
                             p: p,
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KalenderAkademikScreen())),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const KalenderAkademikScreen(),
+                              ),
+                            ),
                           ),
                         ],
                       );
@@ -110,11 +137,22 @@ class PerkuliahanScreen extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
               child: Icon(icon, size: 32, color: color),
             ),
             const SizedBox(height: 12),
-            Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: p.textPrimary), textAlign: TextAlign.center),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: p.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

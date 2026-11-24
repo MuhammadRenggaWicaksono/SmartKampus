@@ -72,25 +72,26 @@ class _MainScreenState extends State<MainScreen> {
   ///
   /// Satu daftar dipakai dua bentuk navigasi (rail samping di desktop, bilah
   /// bawah di HP) supaya urutan tab dan labelnya tidak pernah beda.
-  static const List<({IconData ikon, IconData ikonAktif, String label})> _tabs = [
-    (ikon: Icons.home_outlined, ikonAktif: Icons.home, label: 'Dashboard'),
-    (
-      ikon: Icons.calendar_today_outlined,
-      ikonAktif: Icons.calendar_today,
-      label: 'Akademik',
-    ),
-    (
-      ikon: Icons.menu_book_outlined,
-      ikonAktif: Icons.menu_book,
-      label: 'Perkuliahan',
-    ),
-    (
-      ikon: Icons.account_balance_wallet_outlined,
-      ikonAktif: Icons.account_balance_wallet,
-      label: 'Keuangan',
-    ),
-    (ikon: Icons.person_outline, ikonAktif: Icons.person, label: 'Akun'),
-  ];
+  static const List<({IconData ikon, IconData ikonAktif, String label})> _tabs =
+      [
+        (ikon: Icons.home_outlined, ikonAktif: Icons.home, label: 'Dashboard'),
+        (
+          ikon: Icons.calendar_today_outlined,
+          ikonAktif: Icons.calendar_today,
+          label: 'Akademik',
+        ),
+        (
+          ikon: Icons.menu_book_outlined,
+          ikonAktif: Icons.menu_book,
+          label: 'Perkuliahan',
+        ),
+        (
+          ikon: Icons.account_balance_wallet_outlined,
+          ikonAktif: Icons.account_balance_wallet,
+          label: 'Keuangan',
+        ),
+        (ikon: Icons.person_outline, ikonAktif: Icons.person, label: 'Akun'),
+      ];
 
   /// Satu tab navbar bawah.
   ///

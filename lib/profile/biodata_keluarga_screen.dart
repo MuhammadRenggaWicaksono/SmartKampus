@@ -16,9 +16,13 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
 
   // Controllers untuk menyimpan data (Bisa diisi dari API nanti)
   final _namaAyahCtrl = TextEditingController(text: 'Budi Santoso');
-  final _pekerjaanAyahCtrl = TextEditingController(text: 'Pegawai Negeri Sipil (PNS)');
-  final _penghasilanAyahCtrl = TextEditingController(text: 'Rp 5.000.000 - Rp 10.000.000');
-  
+  final _pekerjaanAyahCtrl = TextEditingController(
+    text: 'Pegawai Negeri Sipil (PNS)',
+  );
+  final _penghasilanAyahCtrl = TextEditingController(
+    text: 'Rp 5.000.000 - Rp 10.000.000',
+  );
+
   final _namaIbuCtrl = TextEditingController(text: 'Siti Aminah');
   final _pekerjaanIbuCtrl = TextEditingController(text: 'Ibu Rumah Tangga');
   final _penghasilanIbuCtrl = TextEditingController(text: '< Rp 1.000.000');
@@ -59,7 +63,10 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Biodata Keluarga', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            title: Text(
+              'Biodata Keluarga',
+              style: TextStyle(color: p.textPrimary, fontSize: 18),
+            ),
             backgroundColor: p.card,
             foregroundColor: p.textPrimary,
             iconTheme: IconThemeData(color: p.textPrimary),
@@ -94,12 +101,20 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
                     Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Row(
                         children: [
                           Icon(Icons.info_outline, color: p.accentText),
                           const SizedBox(width: 8),
-                          Expanded(child: Text('Ubah data orang tua lalu tekan Simpan.', style: TextStyle(color: p.accentText))),
+                          Expanded(
+                            child: Text(
+                              'Ubah data orang tua lalu tekan Simpan.',
+                              style: TextStyle(color: p.accentText),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -107,23 +122,56 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
                   // KELOMPOK 1: DATA AYAH
                   _buildSectionTitle('DATA AYAH KANDUNG', p),
                   _buildCardGroup(p, [
-                    _buildTextField(p, 'Nama Ayah', _namaAyahCtrl, Icons.person_outline),
-                    _buildTextField(p, 'Pekerjaan Ayah', _pekerjaanAyahCtrl, Icons.work_outline),
-                    _buildTextField(p, 'Penghasilan Ayah', _penghasilanAyahCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
+                    _buildTextField(
+                      p,
+                      'Nama Ayah',
+                      _namaAyahCtrl,
+                      Icons.person_outline,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Pekerjaan Ayah',
+                      _pekerjaanAyahCtrl,
+                      Icons.work_outline,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Penghasilan Ayah',
+                      _penghasilanAyahCtrl,
+                      Icons.monetization_on_outlined,
+                      keyboardType: TextInputType.number,
+                    ),
                   ]),
                   const SizedBox(height: 20),
 
                   // KELOMPOK 2: DATA IBU
                   _buildSectionTitle('DATA IBU KANDUNG', p),
                   _buildCardGroup(p, [
-                    _buildTextField(p, 'Nama Ibu', _namaIbuCtrl, Icons.person_outline),
-                    _buildTextField(p, 'Pekerjaan Ibu', _pekerjaanIbuCtrl, Icons.work_outline),
-                    _buildTextField(p, 'Penghasilan Ibu', _penghasilanIbuCtrl, Icons.monetization_on_outlined, keyboardType: TextInputType.number),
+                    _buildTextField(
+                      p,
+                      'Nama Ibu',
+                      _namaIbuCtrl,
+                      Icons.person_outline,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Pekerjaan Ibu',
+                      _pekerjaanIbuCtrl,
+                      Icons.work_outline,
+                    ),
+                    _buildTextField(
+                      p,
+                      'Penghasilan Ibu',
+                      _penghasilanIbuCtrl,
+                      Icons.monetization_on_outlined,
+                      keyboardType: TextInputType.number,
+                    ),
                   ]),
                   const SizedBox(height: 30),
                 ],
               ),
-            )),
+            ),
+          ),
         ),
       ),
     );
@@ -135,7 +183,11 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Text(
         title,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: p.textSecondary,
+        ),
       ),
     );
   }
@@ -170,10 +222,16 @@ class _BiodataKeluargaScreenState extends State<BiodataKeluargaScreen> {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: p.textSecondary),
-          prefixIcon: Icon(icon, color: _isEditing ? p.accent : p.textSecondary),
+          prefixIcon: Icon(
+            icon,
+            color: _isEditing ? p.accent : p.textSecondary,
+          ),
           filled: true,
           fillColor: _isEditing ? p.inputFill : p.surfaceAlt,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: p.border),

@@ -26,7 +26,10 @@ class _JadwalUjianScreenState extends State<JadwalUjianScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Jadwal Ujian', style: TextStyle(color: p.textPrimary, fontSize: 18)),
+            title: Text(
+              'Jadwal Ujian',
+              style: TextStyle(color: p.textPrimary, fontSize: 18),
+            ),
             backgroundColor: p.card,
             foregroundColor: p.textPrimary,
             iconTheme: IconThemeData(color: p.textPrimary),
@@ -49,7 +52,10 @@ class _JadwalUjianScreenState extends State<JadwalUjianScreen> {
                       filled: true,
                       fillColor: p.inputFill,
                       contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
@@ -60,17 +66,35 @@ class _JadwalUjianScreenState extends State<JadwalUjianScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.event_busy, size: 80, color: p.textSecondary),
+                        Icon(
+                          Icons.event_busy,
+                          size: 80,
+                          color: p.textSecondary,
+                        ),
                         const SizedBox(height: 16),
-                        Text('No data available', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: p.textPrimary)),
+                        Text(
+                          'No data available',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: p.textPrimary,
+                          ),
+                        ),
                         const SizedBox(height: 8),
-                        Text('Belum ada jadwal ujian yang dirilis saat ini.', style: TextStyle(fontSize: 13, color: p.textSecondary)),
+                        Text(
+                          'Belum ada jadwal ujian yang dirilis saat ini.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: p.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
               ],
-            )),
+            ),
+          ),
         ),
       ),
     );

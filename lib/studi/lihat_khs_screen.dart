@@ -26,16 +26,36 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
       'ipk': 3.68,
       'total_sks': 23,
       'matkul': [
-        {'kode': '110100', 'nama': 'ALGORITMA DAN PEMROGRAMAN', 'sks': 3, 'nilai': 'A'},
+        {
+          'kode': '110100',
+          'nama': 'ALGORITMA DAN PEMROGRAMAN',
+          'sks': 3,
+          'nilai': 'A',
+        },
         {'kode': '000100', 'nama': 'BAHASA INDONESIA', 'sks': 2, 'nilai': 'A-'},
         {'kode': '110300', 'nama': 'BAHASA INGGRIS', 'sks': 3, 'nilai': 'B'},
         {'kode': '110401', 'nama': 'ETIKA PROFESI', 'sks': 2, 'nilai': 'A'},
-        {'kode': '110501', 'nama': 'INTERAKSI MANUSIA DAN KOMPUTER', 'sks': 3, 'nilai': 'A'},
-        {'kode': '110800', 'nama': 'LOGIKA INFORMATIKA', 'sks': 3, 'nilai': 'A-'},
+        {
+          'kode': '110501',
+          'nama': 'INTERAKSI MANUSIA DAN KOMPUTER',
+          'sks': 3,
+          'nilai': 'A',
+        },
+        {
+          'kode': '110800',
+          'nama': 'LOGIKA INFORMATIKA',
+          'sks': 3,
+          'nilai': 'A-',
+        },
         {'kode': '110900', 'nama': 'MATEMATIKA I', 'sks': 2, 'nilai': 'B'},
         {'kode': '000400', 'nama': 'PANCASILA', 'sks': 2, 'nilai': 'B+'},
-        {'kode': '001000', 'nama': 'TEKNOLOGI INFORMASI', 'sks': 3, 'nilai': 'A'},
-      ]
+        {
+          'kode': '001000',
+          'nama': 'TEKNOLOGI INFORMASI',
+          'sks': 3,
+          'nilai': 'A',
+        },
+      ],
     },
   };
 
@@ -44,7 +64,7 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
       _isLoading = true;
       _isDataTampil = false;
     });
-    
+
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) {
         setState(() {
@@ -103,7 +123,14 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: Text('Kartu Hasil Studi', style: TextStyle(color: p.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
+            title: Text(
+              'Kartu Hasil Studi',
+              style: TextStyle(
+                color: p.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             backgroundColor: p.card,
             foregroundColor: p.textPrimary,
             iconTheme: IconThemeData(color: p.textPrimary),
@@ -117,7 +144,10 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                   onPressed: _cetakPdf,
                   backgroundColor: Colors.red.shade700,
                   icon: const Icon(Icons.picture_as_pdf_outlined),
-                  label: const Text('Cetak PDF', style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'Cetak PDF',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )
               : null,
 
@@ -129,7 +159,10 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                 // --- FILTER SECTION ---
                 Container(
                   color: p.card,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
                   child: Column(
                     children: [
                       Row(
@@ -138,7 +171,14 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Tahun Akademik', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
+                                Text(
+                                  'Tahun Akademik',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: p.textSecondary,
+                                  ),
+                                ),
                                 const SizedBox(height: 6),
                                 _buildDropdown(
                                   p: p,
@@ -159,7 +199,14 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Semester', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: p.textSecondary)),
+                                Text(
+                                  'Semester',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: p.textSecondary,
+                                  ),
+                                ),
                                 const SizedBox(height: 6),
                                 _buildDropdown(
                                   p: p,
@@ -185,7 +232,9 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue.shade700,
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             elevation: 0,
                           ),
                           child: _isLoading
@@ -210,23 +259,29 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
                     ],
                   ),
                 ),
-              
+
                 // --- HASIL SECTION ---
                 Expanded(
                   child: !_isDataTampil
                       ? _buildEmptyState(p)
                       : (dataKhs == null)
-                          ? _buildErrorState(p)
-                          : _buildListKhs(p, dataKhs),
+                      ? _buildErrorState(p)
+                      : _buildListKhs(p, dataKhs),
                 ),
               ],
-            )),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDropdown({required AppPalette p, required String value, required List<String> items, required Function(String?) onChanged}) {
+  Widget _buildDropdown({
+    required AppPalette p,
+    required String value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }) {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -244,7 +299,14 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
           items: items.map((String val) {
             return DropdownMenuItem<String>(
               value: val,
-              child: Text(val, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: p.textPrimary)),
+              child: Text(
+                val,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: p.textPrimary,
+                ),
+              ),
             );
           }).toList(),
           onChanged: onChanged,
@@ -260,7 +322,10 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
         children: [
           Icon(Icons.school_outlined, size: 70, color: p.textSecondary),
           const SizedBox(height: 12),
-          Text('Silakan pilih filter dan klik Tampilkan', style: TextStyle(fontSize: 14, color: p.textMuted)),
+          Text(
+            'Silakan pilih filter dan klik Tampilkan',
+            style: TextStyle(fontSize: 14, color: p.textMuted),
+          ),
         ],
       ),
     );
@@ -273,11 +338,26 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.insert_page_break_outlined, size: 60, color: p.textSecondary),
+            Icon(
+              Icons.insert_page_break_outlined,
+              size: 60,
+              color: p.textSecondary,
+            ),
             const SizedBox(height: 16),
-            Text('Data KHS Tidak Tersedia', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: p.textPrimary)),
+            Text(
+              'Data KHS Tidak Tersedia',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: p.textPrimary,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('Belum ada data nilai untuk Semester $_semesterTerpilih $_tahunTerpilih.', textAlign: TextAlign.center, style: TextStyle(color: p.textSecondary)),
+            Text(
+              'Belum ada data nilai untuk Semester $_semesterTerpilih $_tahunTerpilih.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: p.textSecondary),
+            ),
           ],
         ),
       ),
@@ -288,7 +368,12 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
     List matkulList = data['matkul'];
 
     return ListView(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80), // Bottom padding extra for FAB
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: 80,
+      ), // Bottom padding extra for FAB
       children: [
         // --- PROFIL MAHASISWA & IPK ---
         Container(
@@ -296,14 +381,30 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
           decoration: BoxDecoration(
             color: Colors.blue.shade800,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [BoxShadow(color: Colors.blue.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('MUHAMMAD RENGGA WICAKSONO', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              const Text(
+                'MUHAMMAD RENGGA WICAKSONO',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 4),
-              Text('NIM: 2411044  |  $_semesterTerpilih $_tahunTerpilih', style: TextStyle(color: Colors.white70, fontSize: 12)),
+              Text(
+                'NIM: 2411044  |  $_semesterTerpilih $_tahunTerpilih',
+                style: TextStyle(color: Colors.white70, fontSize: 12),
+              ),
               const Divider(color: Colors.white24, height: 24, thickness: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -317,8 +418,15 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
           ),
         ),
         const SizedBox(height: 20),
-        
-        Text('Detail Nilai Mata Kuliah', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: p.textPrimary)),
+
+        Text(
+          'Detail Nilai Mata Kuliah',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: p.textPrimary,
+          ),
+        ),
         const SizedBox(height: 12),
 
         // --- LIST MATA KULIAH ---
@@ -327,20 +435,38 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
             margin: const EdgeInsets.only(bottom: 12),
             decoration: p.cardDeco(radius: 12),
             child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              title: Text(matkul['nama'], style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: p.textPrimary)),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              title: Text(
+                matkul['nama'],
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: p.textPrimary,
+                ),
+              ),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 6.0),
-                child: Text('Kode: ${matkul['kode']}  •  ${matkul['sks']} SKS', style: TextStyle(fontSize: 11, color: p.textSecondary)),
+                child: Text(
+                  'Kode: ${matkul['kode']}  •  ${matkul['sks']} SKS',
+                  style: TextStyle(fontSize: 11, color: p.textSecondary),
+                ),
               ),
               trailing: Container(
                 width: 45,
                 height: 45,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: _getWarnaNilai(matkul['nilai']).withValues(alpha: 0.15),
+                  color: _getWarnaNilai(matkul['nilai'])
+                      .withValues(alpha: 0.15),
                   shape: BoxShape.circle,
-                  border: Border.all(color: _getWarnaNilai(matkul['nilai']).withValues(alpha: 0.5), width: 2),
+                  border: Border.all(
+                    color: _getWarnaNilai(matkul['nilai'])
+                        .withValues(alpha: 0.5),
+                    width: 2,
+                  ),
                 ),
                 child: Text(
                   matkul['nilai'],
@@ -361,9 +487,19 @@ class _LihatKhsScreenState extends State<LihatKhsScreen> {
   Widget _buildStatColumn(String label, String value) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:app_kampus/akademik/kp_screen.dart';
 import 'package:app_kampus/akademik/skripsi_screen.dart';
 import 'package:app_kampus/core/app_palette.dart';
 import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/data/app_data.dart';
+import 'package:app_kampus/data/kp_store.dart';
 import 'package:app_kampus/data/skripsi_store.dart';
 import 'package:app_kampus/studi/entri_krs_screen.dart';
 import 'package:app_kampus/studi/lihat_krs_screen.dart';
@@ -69,7 +71,9 @@ class AkademikScreen extends StatelessWidget {
                         warnaLencana: p.warning,
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const IsiKrsScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const IsiKrsScreen(),
+                          ),
                         ),
                       ),
                       _buildMenuItem(
@@ -149,52 +153,70 @@ class AkademikScreen extends StatelessWidget {
                     keterangan: 'Kerja Praktik, KKN, dan penyusunan skripsi',
                   ),
                   const SizedBox(height: 10),
-                  _buildMenuGroup(
-                    p,
-                    children: [
-                      _buildMenuItem(
-                        context,
+                  ValueListenableBuilder<List<DataKp>>(
+                    valueListenable: KpStore.daftar,
+                    builder: (context, daftarKp, _) {
+                      final kp = daftarKp.isEmpty ? null : daftarKp.first;
+                      return _buildMenuGroup(
                         p,
-                        ikon: Icons.work_history,
-                        warna: Colors.teal,
-                        judul: 'Kerja Praktik (KP)',
-                        keterangan: 'Magang di instansi atau industri mitra',
-                        lencana: 'Segera',
-                        warnaLencana: p.textMuted,
-                        onTap: () => _belumTersedia(context, p, 'Kerja Praktik'),
-                      ),
-                      _buildMenuItem(
-                        context,
-                        p,
-                        ikon: Icons.groups,
-                        warna: Colors.brown,
-                        judul: 'KKN',
-                        keterangan: 'Kuliah Kerja Nyata tematik',
-                        lencana: 'Segera',
-                        warnaLencana: p.textMuted,
-                        onTap: () => _belumTersedia(context, p, 'KKN'),
-                      ),
-                      _buildMenuItem(
-                        context,
-                        p,
-                        ikon: Icons.school,
-                        warna: Colors.indigo,
-                        judul: 'Skripsi',
-                        keterangan: 'Pengajuan judul, pembimbing, dan tahapan',
-                        lencana: pengajuanSkripsi.isEmpty
-                            ? 'Belum diajukan'
-                            : '${pengajuanSkripsi.length} judul diajukan',
-                        warnaLencana: pengajuanSkripsi.isEmpty
-                            ? p.warning
-                            : p.accent,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SkripsiScreen(),
+                        children: [
+                          _buildMenuItem(
+                            context,
+                            p,
+                            ikon: Icons.work_history,
+                            warna: Colors.teal,
+                            judul: 'Kerja Praktik (KP)',
+                            keterangan: kp == null
+                                ? 'Isi DATA KP: instansi, judul, dan periode'
+                                : '${kp.instansi} · ${kp.periodeSingkat}',
+                            lencana: kp == null
+                                ? 'Belum diisi'
+                                : kp.status.labelSingkat,
+                            warnaLencana: kp == null
+                                ? p.warning
+                                : _warnaStatusKp(p, kp.status),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const KpScreen(),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
+                          _buildMenuItem(
+                            context,
+                            p,
+                            ikon: Icons.groups,
+                            warna: Colors.brown,
+                            judul: 'KKN',
+                            keterangan: 'Kuliah Kerja Nyata tematik',
+                            lencana: 'Segera',
+                            warnaLencana: p.textMuted,
+                            onTap: () => _belumTersedia(context, p, 'KKN'),
+                          ),
+                          _buildMenuItem(
+                            context,
+                            p,
+                            ikon: Icons.school,
+                            warna: Colors.indigo,
+                            judul: 'Skripsi',
+                            keterangan:
+                                'Pengajuan judul, pembimbing, dan tahapan',
+                            lencana: pengajuanSkripsi.isEmpty
+                                ? 'Belum diajukan'
+                                : '${pengajuanSkripsi.length} judul diajukan',
+                            warnaLencana: pengajuanSkripsi.isEmpty
+                                ? p.warning
+                                : p.accent,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const SkripsiScreen(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -203,6 +225,17 @@ class AkademikScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Warna lencana status KP di menu Akademik.
+  Color _warnaStatusKp(AppPalette p, StatusKp status) {
+    return switch (status) {
+      StatusKp.menunggu => p.warning,
+      StatusKp.disetujui => p.accentText,
+      StatusKp.berjalan => Colors.teal,
+      StatusKp.selesai => p.success,
+      StatusKp.ditolak => p.danger,
+    };
   }
 
   void _belumTersedia(BuildContext context, AppPalette p, String nama) {
@@ -224,100 +257,391 @@ class AkademikScreen extends StatelessWidget {
 
   // ------------------------------------------------------- kartu ringkasan
   Widget _buildRingkasan(AppPalette p) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF2563EB), Color(0xFF1E40AF)],
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF2563EB).withValues(alpha: 0.3),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
+    return LayoutBuilder(
+      builder: (context, c) {
+        final lebar = c.maxWidth;
+        return Container(
+          decoration: BoxDecoration(
+            color: p.card,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: p.border),
+            boxShadow: [
+              BoxShadow(
+                color: p.shadow,
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          child: lebar >= 720 ? _bangunKartuLebar(p) : _bangunKartuSemua(p),
+        );
+      },
+    );
+  }
+
+  // Layout sempit (HP): header di atas, tiga pilar statistik lalu bilah
+  // kelulusan di bawah.
+  Widget _bangunKartuSemua(AppPalette p) {
+    final sksDitempuh = AppData.sksDitempuh;
+    final sksTarget = kSksTargetLulus;
+    final progresSks = (sksDitempuh / sksTarget).clamp(0.0, 1.0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _bangunKartuHeader(p),
+        Divider(height: 1, thickness: 1, color: p.divider),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(9),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.menu_book_outlined,
-                  color: Colors.white,
-                  size: 20,
+              Expanded(
+                child: _buildPilarStat(
+                  p,
+                  label: 'IPK',
+                  nilai: AppData.ipk.toStringAsFixed(2),
+                  sublabel: 'Skala 4.00',
+                  warnaNilai: p.accentText,
+                  ikon: Icons.grade_rounded,
+                  warnaIkon: Colors.amber.shade700,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: _buildPilarStat(
+                  p,
+                  label: 'TOTAL SKS',
+                  nilai: '$sksDitempuh',
+                  sublabel: 'dari $sksTarget SKS',
+                  warnaNilai: p.textPrimary,
+                  ikon: Icons.timer_outlined,
+                  warnaIkon: Colors.teal,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildPilarStat(
+                  p,
+                  label: 'MATAKULIAH',
+                  nilai: '${AppData.mataKuliahAktif.length}',
+                  sublabel: 'Semester ini',
+                  warnaNilai: p.textPrimary,
+                  ikon: Icons.menu_book_rounded,
+                  warnaIkon: Colors.indigo,
+                ),
+              ),
+            ],
+          ),
+        ),
+        _bangunKartuProgres(p, progresSks),
+      ],
+    );
+  }
+
+  // Layout lebar (Web/laptop): identitas semester di kiri, tiga metrik di
+  // kanan, dipisah garis tipis — tidak ada lagi tiga kotak sempit tertancap
+  // di tengah kartu yang kosong.
+  Widget _bangunKartuLebar(AppPalette p) {
+    final sksDitempuh = AppData.sksDitempuh;
+    final sksTarget = kSksTargetLulus;
+    final progresSks = (sksDitempuh / sksTarget).clamp(0.0, 1.0);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 22, 24, 22),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Kiri: semester & progres kelulusan
+          Expanded(
+            flex: 5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _bangunChipSemester(p),
+                const SizedBox(height: 12),
+                Text(
+                  AppData.semesterAktif,
+                  style: TextStyle(
+                    color: p.textPrimary,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.1,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
                   children: [
                     Text(
-                      'Semester ${AppData.sksPerSemester.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      'Kelulusan SKS',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: p.textSecondary,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(width: 10),
                     Text(
-                      AppData.semesterAktif,
+                      '${(progresSks * 100).toInt()}% selesai',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.85),
-                        fontSize: 13,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: p.accentText,
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child: LinearProgressIndicator(
+                    value: progresSks,
+                    minHeight: 8,
+                    backgroundColor: p.surfaceAlt,
+                    valueColor: AlwaysStoppedAnimation<Color>(p.accent),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '$sksDitempuh dari $sksTarget SKS yang ditempuh',
+                  style: TextStyle(fontSize: 11.5, color: p.textMuted),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildStat('IPK', AppData.ipk.toStringAsFixed(2)),
-              _buildStat('SKS', '${AppData.sksDitempuh}/$kSksTargetLulus'),
-              _buildStat('MATA KULIAH', '${AppData.mataKuliahAktif.length}'),
-            ],
+          const SizedBox(width: 28),
+          Container(width: 1, height: 118, color: p.divider),
+          const SizedBox(width: 28),
+          // Kanan: tiga metrik utama
+          Expanded(
+            flex: 6,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: _buildPilarStat(
+                    p,
+                    label: 'IPK',
+                    nilai: AppData.ipk.toStringAsFixed(2),
+                    sublabel: 'Skala 4.00',
+                    warnaNilai: p.accentText,
+                    ikon: Icons.grade_rounded,
+                    warnaIkon: Colors.amber.shade700,
+                  ),
+                ),
+                _pemisahMetrik(p),
+                Expanded(
+                  child: _buildPilarStat(
+                    p,
+                    label: 'TOTAL SKS',
+                    nilai: '$sksDitempuh',
+                    sublabel: 'dari $sksTarget SKS',
+                    warnaNilai: p.textPrimary,
+                    ikon: Icons.timer_outlined,
+                    warnaIkon: Colors.teal,
+                  ),
+                ),
+                _pemisahMetrik(p),
+                Expanded(
+                  child: _buildPilarStat(
+                    p,
+                    label: 'MATAKULIAH',
+                    nilai: '${AppData.mataKuliahAktif.length}',
+                    sublabel: 'Semester ini',
+                    warnaNilai: p.textPrimary,
+                    ikon: Icons.menu_book_rounded,
+                    warnaIkon: Colors.indigo,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStat(String label, String nilai) {
-    return Expanded(
+  Widget _bangunKartuHeader(AppPalette p) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _bangunChipSemester(p),
+                const SizedBox(height: 8),
+                Text(
+                  AppData.semesterAktif,
+                  style: TextStyle(
+                    color: p.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: p.surfaceAlt,
+              shape: BoxShape.circle,
+              border: Border.all(color: p.border),
+            ),
+            child: Icon(
+              Icons.auto_stories_rounded,
+              color: p.accentText,
+              size: 22,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bangunChipSemester(AppPalette p) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: p.accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.school_outlined, size: 13, color: p.accentText),
+          const SizedBox(width: 5),
+          Text(
+            'SEMESTER ${AppData.sksPerSemester.length}',
+            style: TextStyle(
+              color: p.accentText,
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bangunKartuProgres(AppPalette p, double progresSks) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.75),
-              fontSize: 10.5,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Kelulusan SKS',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: p.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                '${(progresSks * 100).toInt()}% selesai',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: p.accentText,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: progresSks,
+              minHeight: 6,
+              backgroundColor: p.surfaceAlt,
+              valueColor: AlwaysStoppedAnimation<Color>(p.accent),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _pemisahMetrik(AppPalette p) {
+    return Container(
+      width: 1,
+      height: 64,
+      margin: const EdgeInsets.symmetric(horizontal: 18),
+      color: p.divider,
+    );
+  }
+
+  Widget _buildPilarStat(
+    AppPalette p, {
+    required String label,
+    required String nilai,
+    required String sublabel,
+    required Color warnaNilai,
+    required IconData ikon,
+    required Color warnaIkon,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: p.surfaceAlt,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: p.border.withValues(alpha: 0.6)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(ikon, size: 12, color: warnaIkon),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: p.textSecondary,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              nilai,
+              style: TextStyle(
+                color: warnaNilai,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                height: 1.1,
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
           Text(
-            nilai,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            sublabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: p.textMuted,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
