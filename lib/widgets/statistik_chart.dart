@@ -7,9 +7,12 @@ import 'package:app_kampus/data/app_data.dart';
 
 enum ChartMode { absensi }
 
-/// Kartu statistik akademik dengan grafik absensi saja.
+/// Kartu "Statistik Akademik": rekap kehadiran memakai **angka pasti**
+/// (jumlah pertemuan), bukan persen.
 ///
-/// Grafik digambar manual pakai CustomPainter — tanpa package tambahan.
+/// Mengikuti tampilan website legacy kampus: setiap status — Hadir, Sakit,
+/// Izin, Alpa — ditampilkan terpisah per mata kuliah supaya pembaca tidak
+/// menebak status mana yang "hilang" di balik satu persentase gabungan.
 class StatistikChart extends StatelessWidget {
   const StatistikChart({super.key});
 
@@ -24,19 +27,13 @@ class StatistikChart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(p),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 250,
-                width: double.infinity,
-                child: CustomPaint(
-                  painter: _AbsensiChartPainter(
-                    data: AppData.mataKuliahAktif,
-                    p: p,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              _buildLegend(p),
+              const SizedBox(height: 16),
+              _buildRingkasan(p),
+              const SizedBox(height: 4),
+              const Divider(height: 26),
+              for (final mk in AppData.mataKuliahAktif) _buildBaris(p, mk),
+              const SizedBox(height: 6),
+              _buildCatatan(p),
             ],
           ),
         );
@@ -73,7 +70,7 @@ class StatistikChart extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                _subtitle(),
+                'Rekap kehadiran semester ini — jumlah pertemuan',
                 style: TextStyle(
                   fontSize: 12.5,
                   height: 1.25,
@@ -87,44 +84,187 @@ class StatistikChart extends StatelessWidget {
     );
   }
 
-  String _subtitle() =>
-      'Kehadiran ${AppData.persenKehadiran}% · '
-      '${AppData.totalAbsen} kali tidak hadir dari '
-      '${AppData.totalPertemuanTerlaksana} pertemuan';
-
-  Widget _buildLegend(AppPalette p) {
-    return Wrap(
-      spacing: 14,
-      runSpacing: 6,
+  // ------------------------------------------------- ringkasan total (angka)
+  Widget _buildRingkasan(AppPalette p) {
+    return Row(
       children: [
-        _legendItem(p, kHadir, 'Hadir ${AppData.totalHadir}'),
-        _legendItem(p, kSakit, 'Sakit ${AppData.totalSakit}'),
-        _legendItem(p, kIzin, 'Izin ${AppData.totalIzin}'),
-        _legendItem(p, kAlpa, 'Alpa ${AppData.totalAlpa}'),
+        _ringkasanSel(p, 'Hadir', AppData.totalHadir, kHadir),
+        const SizedBox(width: 8),
+        _ringkasanSel(p, 'Sakit', AppData.totalSakit, kSakit),
+        const SizedBox(width: 8),
+        _ringkasanSel(p, 'Izin', AppData.totalIzin, kIzin),
+        const SizedBox(width: 8),
+        _ringkasanSel(p, 'Alpa', AppData.totalAlpa, kAlpa),
       ],
     );
   }
 
-  Widget _legendItem(AppPalette p, Color warna, String teks) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 9,
-          height: 9,
-          decoration: BoxDecoration(color: warna, shape: BoxShape.circle),
+  Widget _ringkasanSel(AppPalette p, String label, int nilai, Color warna) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        decoration: BoxDecoration(
+          color: p.surfaceAlt,
+          borderRadius: BorderRadius.circular(12),
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: warna,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: p.textCardSupport,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '$nilai',
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 22,
+                  height: 1.05,
+                  fontWeight: FontWeight.w800,
+                  color: p.statusInk(warna),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ------------------------------------------------- rincian per mata kuliah
+  Widget _buildBaris(AppPalette p, MataKuliahAktif mk) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 9),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  mk.nama,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                    color: p.textPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              // Pertemuan yang sudah terlaksana dari rencana 16.
+              Text(
+                '${mk.terlaksana}/$kRencanaTatapMuka',
+                style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                  color: p.textChartAxis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              _selKategori(p, 'Hadir', mk.hadir, kHadir),
+              const SizedBox(width: 8),
+              _selKategori(p, 'Sakit', mk.sakit, kSakit),
+              const SizedBox(width: 8),
+              _selKategori(p, 'Izin', mk.izin, kIzin),
+              const SizedBox(width: 8),
+              _selKategori(p, 'Alpa', mk.alpa, kAlpa),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Satu status dengan angkanya sendiri — sengaja tidak digabung dengan
+  /// status lain supaya tiap kategori terbaca jelas.
+  Widget _selKategori(AppPalette p, String label, int nilai, Color warna) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 8),
+        decoration: BoxDecoration(
+          color: p.surfaceAlt,
+          borderRadius: BorderRadius.circular(9),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w700,
+                color: p.textCardSupport,
+              ),
+            ),
+            const SizedBox(height: 2),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '$nilai',
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.1,
+                  fontWeight: FontWeight.w800,
+                  color: p.statusInk(warna),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCatatan(AppPalette p) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.info_outline, size: 14, color: p.textChartAxis),
         const SizedBox(width: 6),
-        // Flexible + ellipsis supaya teks legenda panjang tidak pernah
-        // membuat RenderFlex overflow di layar sempit.
-        Flexible(
+        Expanded(
           child: Text(
-            teks,
-            overflow: TextOverflow.ellipsis,
+            'Angka adalah jumlah pertemuan. Hadir, sakit, izin, dan alpa '
+            'dihitung terpisah. Batas kehadiran minimal setara 12 dari '
+            '$kRencanaTatapMuka pertemuan.',
             style: TextStyle(
-              fontSize: 13.5,
-              height: 1.2,
-              fontWeight: FontWeight.w600,
+              fontSize: 11.5,
+              height: 1.35,
               color: p.textCardSupport,
             ),
           ),
@@ -132,23 +272,6 @@ class StatistikChart extends StatelessWidget {
       ],
     );
   }
-}
-
-// Ukuran teks pada label grafik absensi.
-abstract final class _Fs {
-  static const double sumbu = 12;
-  static const double label = 13;
-}
-
-TextPainter _tp(String teks, TextStyle gaya, {double? maxWidth}) {
-  final tp = TextPainter(
-    text: TextSpan(text: teks, style: gaya),
-    textDirection: TextDirection.ltr,
-    maxLines: 1,
-    ellipsis: '...',
-  );
-  tp.layout(maxWidth: maxWidth ?? double.infinity);
-  return tp;
 }
 
 /// Menggambar garis putus-putus antara [a] dan [b].
@@ -172,115 +295,4 @@ void garisPutus(
     canvas.drawLine(a + arah * jalan, a + arah * akhir, paint);
     jalan = akhir + gap;
   }
-}
-
-class _AbsensiChartPainter extends CustomPainter {
-  final List<MataKuliahAktif> data;
-  final AppPalette p;
-
-  _AbsensiChartPainter({required this.data, required this.p});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (data.isEmpty) return;
-
-    final gayaAngka = TextStyle(
-      fontSize: _Fs.label,
-      fontWeight: FontWeight.bold,
-      color: p.textPrimary,
-    );
-    final gayaKuartal = TextStyle(fontSize: _Fs.sumbu, color: p.textChartAxis);
-    final tpAngka = _tp('100%', gayaAngka);
-    final tpKuartal = _tp('16', gayaKuartal);
-
-    // Kolom angka kanan & ruang penanda kuartal dihitung dari lebar teks
-    // aslinya. Dengan lebar tetap (42dp / 40dp), label kuartal '16' di ujung
-    // sumbu masuk ke kolom angka begitu fontnya dinaikkan ke 12-13pt.
-    final kanan = tpAngka.width + tpKuartal.width / 2 + 12;
-    final atas = tpKuartal.height + 8;
-    const bawah = 10.0;
-    final lebarLabel = math.min(size.width * 0.38, 126.0);
-    final xAwal = lebarLabel + 6;
-    final lebarBar = size.width - xAwal - kanan;
-    if (lebarBar <= 0) return;
-
-    final tinggiIsi = size.height - atas - bawah;
-    if (tinggiIsi <= 0) return;
-    final tinggiBaris = tinggiIsi / data.length;
-    final tinggiBar = math.min(tinggiBaris * 0.52, 13.0);
-    final skala = lebarBar / kRencanaTatapMuka;
-
-    for (final kuartal in <int>[4, 8, 12, 16]) {
-      final x = xAwal + skala * kuartal;
-      canvas.drawLine(
-        Offset(x, atas - 4),
-        Offset(x, atas + tinggiIsi),
-        Paint()
-          ..color = p.border.withValues(alpha: 0.45)
-          ..strokeWidth = 1,
-      );
-      final tp = _tp('$kuartal', gayaKuartal);
-      tp.paint(canvas, Offset(x - tp.width / 2, atas - tpKuartal.height - 2));
-    }
-
-    for (var i = 0; i < data.length; i++) {
-      final mk = data[i];
-      final tengah = atas + tinggiBaris * i + tinggiBaris / 2;
-      final y = tengah - tinggiBar / 2;
-
-      final tpNama = _tp(
-        mk.nama,
-        TextStyle(
-          fontSize: _Fs.label,
-          fontWeight: FontWeight.w600,
-          color: p.textPrimary,
-        ),
-        maxWidth: lebarLabel,
-      );
-      tpNama.paint(canvas, Offset(0, tengah - tpNama.height / 2));
-
-      final jalur = RRect.fromRectAndRadius(
-        Rect.fromLTWH(xAwal, y, lebarBar, tinggiBar),
-        Radius.circular(tinggiBar / 2),
-      );
-      canvas.drawRRect(jalur, Paint()..color = p.surfaceAlt);
-
-      canvas.save();
-      canvas.clipRRect(jalur);
-      var x = xAwal;
-      final segmen = <(Color, int)>[
-        (kHadir, mk.hadir),
-        (kSakit, mk.sakit),
-        (kIzin, mk.izin),
-        (kAlpa, mk.alpa),
-      ];
-      for (final (warna, jumlah) in segmen) {
-        if (jumlah <= 0) continue;
-        final lebarSegmen = skala * jumlah;
-        canvas.drawRect(
-          Rect.fromLTWH(x, y, lebarSegmen, tinggiBar),
-          Paint()..color = warna,
-        );
-        x += lebarSegmen;
-      }
-      canvas.restore();
-
-      final tpNilai = _tp(
-        '${mk.persenHadir}%',
-        TextStyle(
-          fontSize: _Fs.label,
-          fontWeight: FontWeight.bold,
-          color: mk.persenHadir >= 75 ? p.textPrimary : p.danger,
-        ),
-      );
-      tpNilai.paint(
-        canvas,
-        Offset(size.width - tpNilai.width, tengah - tpNilai.height / 2),
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_AbsensiChartPainter old) =>
-      old.data != data || old.p.mode != p.mode;
 }

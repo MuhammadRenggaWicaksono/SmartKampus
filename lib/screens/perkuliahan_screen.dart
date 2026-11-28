@@ -3,7 +3,7 @@ import 'package:app_kampus/core/app_palette.dart';
 import 'package:app_kampus/core/konten_layar.dart';
 import 'package:app_kampus/core/theme_builder.dart';
 import 'package:app_kampus/perkuliahan/jadwal_kuliah_screen.dart';
-import 'package:app_kampus/perkuliahan/presensi_screen.dart';
+import 'package:app_kampus/lms/screens/lms_entry_screen.dart';
 import 'package:app_kampus/perkuliahan/jadwal_ujian_screen.dart';
 import 'package:app_kampus/akademik/kalender_akademik_screen.dart';
 
@@ -69,14 +69,14 @@ class PerkuliahanScreen extends StatelessWidget {
                           ),
                           _buildMenuCard(
                             context,
-                            title: 'Presensi',
-                            icon: Icons.how_to_reg_outlined,
-                            color: Colors.teal,
+                            title: 'LMS Moodle',
+                            icon: Icons.school_outlined,
+                            color: Colors.indigo,
                             p: p,
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const PresensiScreen(),
+                                builder: (_) => const LmsEntryScreen(),
                               ),
                             ),
                           ),

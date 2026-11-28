@@ -19,7 +19,11 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          body: Center(child: SizedBox(width: 360, child: StatistikChart())),
+          body: SingleChildScrollView(
+            child: Center(
+              child: SizedBox(width: 360, child: StatistikChart()),
+            ),
+          ),
         ),
       ),
     );

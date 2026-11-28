@@ -23,7 +23,13 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: Center(child: SizedBox(width: 360, child: StatistikChart())),
+            // Kartu rekap sekarang lebih tinggi dari satu layar — bungkus
+            // dengan scroll supaya tidak RenderFlex overflow saat diuji.
+            body: SingleChildScrollView(
+              child: Center(
+                child: SizedBox(width: 360, child: StatistikChart()),
+              ),
+            ),
           ),
         ),
       );
@@ -37,14 +43,18 @@ void main() {
       await pumpChart(tester);
 
       expect(find.text('Statistik Akademik'), findsOneWidget);
-      expect(
-        find.textContaining('Kehadiran ${AppData.persenKehadiran}%'),
-        findsOneWidget,
-      );
-      expect(find.text('Hadir ${AppData.totalHadir}'), findsOneWidget);
-      expect(find.text('Sakit ${AppData.totalSakit}'), findsOneWidget);
-      expect(find.text('Izin ${AppData.totalIzin}'), findsOneWidget);
-      expect(find.text('Alpa ${AppData.totalAlpa}'), findsOneWidget);
+      // Tidak ada lagi persentase — semua tampil sebagai angka pasti.
+      expect(find.textContaining('%'), findsNothing);
+      // Label tiap status tampil terpisah (ringkasan + rincian per MK).
+      expect(find.text('Hadir'), findsWidgets);
+      expect(find.text('Sakit'), findsWidgets);
+      expect(find.text('Izin'), findsWidgets);
+      expect(find.text('Alpa'), findsWidgets);
+      // Angka total hadir/sakit/izin/alpa muncul sebagai angka.
+      expect(find.text('${AppData.totalHadir}'), findsWidgets);
+      expect(find.text('${AppData.totalSakit}'), findsWidgets);
+      expect(find.text('${AppData.totalIzin}'), findsWidgets);
+      expect(find.text('${AppData.totalAlpa}'), findsWidgets);
       expect(find.text('IPS 1-8'), findsNothing);
       expect(find.text('Tatap Muka'), findsNothing);
       expect(find.byType(StatistikChart), findsOneWidget);

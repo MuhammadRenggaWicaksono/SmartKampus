@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Aplikasi ini butuh jaringan untuk memuat data kampus & LMS.
+         Manifest debug/profile sudah menambahkannya sendiri, tapi build
+         release TIDAK — tanpa baris ini, rilis akan gagal memuat data. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="app_kampus"
         android:name="${applicationName}"
@@ -51,6 +55,17 @@
             <intent>
                 <action android:name="android.intent.action.GET_CONTENT"/>
                 <data android:mimeType="image/*"/>
+            </intent>
+            <!-- Diperlukan url_launcher: Android 11+ tidak bisa melihat aplikasi
+                 browser/penampil berkas tanpa deklarasi ini, jadi membuka
+                 pluginfile.php atau halaman Moodle akan gagal diam-diam. -->
+            <intent>
+                <action android:name="android.intent.action.VIEW"/>
+                <data android:scheme="https"/>
+            </intent>
+            <intent>
+                <action android:name="android.intent.action.VIEW"/>
+                <data android:scheme="http"/>
             </intent>
         </queries>
 </manifest>
